@@ -11,6 +11,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Set;
+import java.util.concurrent.atomic.AtomicInteger;
 
 import com.lowagie.text.DocumentException;
 import com.lowagie.text.pdf.AcroFields;
@@ -56,12 +57,15 @@ public class PdfTool {
             stamper = new PdfStamper(pdfReader, baos);
             stamper.setFormFlattening(true);
 
+            final AtomicInteger i = new AtomicInteger();
+
             AcroFields fields = stamper.getAcroFields();
             @SuppressWarnings("unchecked") Set<String> set = fields.getFields().keySet();
             set.stream().forEach(key -> {
                 try {
-                    System.out.println("Stamping key %s" + key);
-                    fields.setField(key, key);
+                    System.out.println("Stamping key " + key + " as " + i.intValue());
+                    fields.setField(key, i.intValue() + "");
+                    i.incrementAndGet();
                 } catch (IOException | DocumentException e) {
                     System.err.println(format("Cannot stamp field %s", key));
                 }
