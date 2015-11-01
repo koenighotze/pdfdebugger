@@ -60,6 +60,7 @@ public class PdfTool {
             @SuppressWarnings("unchecked") Set<String> set = fields.getFields().keySet();
             set.stream().forEach(key -> {
                 try {
+                    System.out.println("Stamping key %s" + key);
                     fields.setField(key, key);
                 } catch (IOException | DocumentException e) {
                     System.err.println(format("Cannot stamp field %s", key));
