@@ -32,10 +32,14 @@ public class PdfTool {
     }
 
     public static void main(String[] args) throws IOException, DocumentException {
-        if (args.length != 1) {
+        if (args.length < 1 || args.length > 2) {
             printUsage();
 
             return;
+        }
+        boolean usenum = false;
+        if (args.length == 2) {
+            usenum = "usenum".equals(args[1]);
         }
 
         Path path = Paths.get(args[0]);
@@ -45,10 +49,10 @@ public class PdfTool {
             return;
         }
 
-        new PdfTool(path).printPreFilledPdf();
+        new PdfTool(path).printPreFilledPdf(usenum);
     }
 
-    private byte[] prefill() throws IOException, DocumentException {
+    private byte[] prefill(boolean usenum) throws IOException, DocumentException {
         PdfReader pdfReader = null;
         PdfStamper stamper = null;
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
@@ -57,19 +61,7 @@ public class PdfTool {
             stamper = new PdfStamper(pdfReader, baos);
             stamper.setFormFlattening(true);
 
-            final AtomicInteger i = new AtomicInteger();
-
-            AcroFields fields = stamper.getAcroFields();
-            @SuppressWarnings("unchecked") Set<String> set = fields.getFields().keySet();
-            set.stream().forEach(key -> {
-                try {
-                    System.out.println("Stamping key " + key + " as " + i.intValue());
-                    fields.setField(key, i.intValue() + "");
-                    i.incrementAndGet();
-                } catch (IOException | DocumentException e) {
-                    System.err.println(format("Cannot stamp field %s", key));
-                }
-            });
+            stampFields(stamper, usenum);
             baos.flush();
         } finally {
             closeStamper(stamper);
@@ -77,6 +69,24 @@ public class PdfTool {
         }
 
         return baos.toByteArray();
+    }
+
+    private void stampFields(PdfStamper stamper, boolean usenum) {
+        final AtomicInteger i = new AtomicInteger();
+
+        AcroFields fields = stamper.getAcroFields();
+        @SuppressWarnings("unchecked") Set<String> set = fields.getFields().keySet();
+        set.stream().forEach(key -> {
+            try {
+                String val = usenum ? i.intValue() + "" : key;
+
+                System.out.println("Stamping key " + key + " as " + val);
+                fields.setField(key, val);
+                i.incrementAndGet();
+            } catch (IOException | DocumentException e) {
+                System.err.println(format("Cannot stamp field %s", key));
+            }
+        });
     }
 
     private void closeReader(PdfReader pdfReader) {
@@ -95,8 +105,8 @@ public class PdfTool {
         }
     }
 
-    private void printPreFilledPdf() throws IOException, DocumentException {
-        byte[] doc = prefill();
+    private void printPreFilledPdf(boolean usenum) throws IOException, DocumentException {
+        byte[] doc = prefill(usenum);
 
         Path out = Files.createTempFile("stamped", ".pdf");
         Files.write(out, doc, WRITE);
@@ -104,6 +114,6 @@ public class PdfTool {
     }
 
     private static void printUsage() {
-        System.out.printf("Usage: PdfTool <file.pdf>");
+        System.out.printf("Usage: PdfTool <file.pdf> [usenum]");
     }
 }
