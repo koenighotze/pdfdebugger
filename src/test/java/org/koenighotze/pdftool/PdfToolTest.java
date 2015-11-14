@@ -1,14 +1,12 @@
 package org.koenighotze.pdftool;
 
-import java.io.BufferedOutputStream;
-import java.io.ByteArrayOutputStream;
-import java.io.IOException;
-import java.io.PrintStream;
+import com.lowagie.text.*;
+import org.junit.*;
 
-import com.lowagie.text.DocumentException;
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
+import java.io.*;
+
+import static org.fest.assertions.Assertions.*;
+import static org.koenighotze.pdftool.PdfTool.*;
 
 /**
  * @author dschmitz
@@ -16,34 +14,44 @@ import org.junit.Test;
 public class PdfToolTest {
 
     private PrintStream originalOut;
+    private ByteArrayOutputStream stdOutBos;
+    private PrintStream originalErr;
+    private ByteArrayOutputStream stdErrBos;
 
     @Before
     public void setup() {
         originalOut = System.out;
-        PrintStream printStream = new PrintStream(new BufferedOutputStream(new ByteArrayOutputStream()));
-//        System.setOut();
+        stdOutBos = new ByteArrayOutputStream();
+        System.setOut(new PrintStream(new BufferedOutputStream(stdOutBos), true));
+
+        originalErr = System.err;
+        stdErrBos = new ByteArrayOutputStream();
+        System.setErr(new PrintStream(new BufferedOutputStream(stdErrBos), true));
     }
 
     @After
     public void tearDown() {
-        System.setOut(originalOut);
+        if (null != originalOut) {
+            System.setOut(originalOut);
+        }
+
+        if (null != originalErr) {
+            System.setErr(originalErr);
+        }
     }
 
     @Test
     public void calling_the_main_method_without_args_prints_the_usage() throws IOException, DocumentException {
         // ...i could try to capture the stdout, but...
+        main(new String[] {});
 
-        PrintStream originalOut = System.out;
-
-        System.setOut(new PrintStream(new BufferedOutputStream(new ByteArrayOutputStream())));
-        PdfTool.main(new String[]{});
+        assertThat(stdOutBos.toString("UTF-8")).contains("Usage");
     }
-    
+
     @Test
     public void if_the_pdf_does_not_exist_no_exception_is_thrown() throws IOException, DocumentException {
-        PdfTool.main(new String[] { "blafasel "});
+        main(new String[] { "blafasel" });
+        assertThat(stdErrBos.toString("UTF-8")).contains("blafasel does not exist");
     }
-
-
 
 }
