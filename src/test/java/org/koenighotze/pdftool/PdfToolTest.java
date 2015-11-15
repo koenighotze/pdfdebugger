@@ -42,8 +42,14 @@ public class PdfToolTest {
 
     @Test
     public void calling_the_main_method_without_args_prints_the_usage() throws IOException, DocumentException {
-        // ...i could try to capture the stdout, but...
         main(new String[] {});
+
+        assertThat(stdOutBos.toString("UTF-8")).contains("Usage");
+    }
+
+    @Test
+    public void calling_the_main_method_with_more_than_2_args_prints_the_usage() throws IOException, DocumentException {
+        main(new String[] { "bla", "blub", "tuk" });
 
         assertThat(stdOutBos.toString("UTF-8")).contains("Usage");
     }

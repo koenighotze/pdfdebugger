@@ -37,6 +37,6 @@ public class PdfTool {
     }
 
     private static void printUsage() {
-        System.out.printf("Usage: PdfTool <file.pdf> [usenum]");
+        System.out.printf("Usage: PdfTool <file.pdf> [usenum]\n");
     }
 }

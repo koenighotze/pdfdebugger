@@ -78,12 +78,14 @@ public class Stamper {
         }
     }
 
-    public void printPreFilledPdf(boolean usenum) throws IOException, DocumentException {
+    public Path printPreFilledPdf(boolean usenum) throws IOException, DocumentException {
         byte[] doc = prefill(usenum);
 
         Path out = createTempFile("stamped", ".pdf");
-        Files.write(out, doc, WRITE);
+        write(out, doc, WRITE);
         System.out.println(format("Result is here: %s", out.toAbsolutePath()));
+
+        return out.toAbsolutePath();
     }
 
 }
