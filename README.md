@@ -11,7 +11,7 @@ $ mvn package
 and use it like this:
 
 ```bash
-$ java -jar pdftool YOUR_PDF_FORM.pdf
+$ java -jar pdftool-<VERSION>.jar YOUR_PDF_FORM.pdf
 Result is here: /var/folders/fj/m9dg31412tgg3v1l3ly23145t6j5nw/T/stamped8992316045665224650.pdf
 ```
 
