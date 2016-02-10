@@ -19,7 +19,7 @@ public class PdfToolTest {
     private ByteArrayOutputStream stdErrBos;
 
     @Before
-    public void setup() {
+    public void setup() throws IOException, DocumentException {
         originalOut = System.out;
         stdOutBos = new ByteArrayOutputStream();
         System.setOut(new PrintStream(new BufferedOutputStream(stdOutBos), true));
@@ -44,19 +44,20 @@ public class PdfToolTest {
     public void calling_the_main_method_without_args_prints_the_usage() throws IOException, DocumentException {
         main(new String[] {});
 
-        assertThat(stdOutBos.toString("UTF-8")).contains("Usage");
+        assertThat(stdOutBos.toString("UTF-8")).contains("usage");
     }
 
     @Test
     public void calling_the_main_method_with_more_than_2_args_prints_the_usage() throws IOException, DocumentException {
         main(new String[] { "bla", "blub", "tuk" });
 
-        assertThat(stdOutBos.toString("UTF-8")).contains("Usage");
+        assertThat(stdOutBos.toString("UTF-8")).contains("usage");
     }
 
     @Test
     public void if_the_pdf_does_not_exist_no_exception_is_thrown() throws IOException, DocumentException {
-        main(new String[] { "blafasel" });
+        main(new String[] { "--file", "blafasel" });
+        System.out.println(stdOutBos.toString("UTF-8"));
         assertThat(stdErrBos.toString("UTF-8")).contains("blafasel does not exist");
     }
 
