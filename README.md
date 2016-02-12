@@ -2,6 +2,8 @@
 
 Simple tool for pre-stamping a pdf form.
 
+Current build status: [![Build Status](https://travis-ci.org/koenighotze/pdfdebugger.svg?branch=master)](https://travis-ci.org/koenighotze/pdfdebugger)
+
 Build it like this: 
 
 ```bash
