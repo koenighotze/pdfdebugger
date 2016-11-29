@@ -1,12 +1,17 @@
 package org.koenighotze.pdftool;
 
-import com.lowagie.text.*;
-import org.junit.*;
+import static org.fest.assertions.Assertions.assertThat;
+import static org.koenighotze.pdftool.PdfTool.main;
 
-import java.io.*;
+import java.io.BufferedOutputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.io.PrintStream;
 
-import static org.fest.assertions.Assertions.*;
-import static org.koenighotze.pdftool.PdfTool.*;
+import com.lowagie.text.DocumentException;
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
 
 /**
  * @author dschmitz
@@ -19,7 +24,7 @@ public class PdfToolTest {
     private ByteArrayOutputStream stdErrBos;
 
     @Before
-    public void setup() throws IOException, DocumentException {
+    public void setUp() throws IOException, DocumentException {
         originalOut = System.out;
         stdOutBos = new ByteArrayOutputStream();
         System.setOut(new PrintStream(new BufferedOutputStream(stdOutBos), true));

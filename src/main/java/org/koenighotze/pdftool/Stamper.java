@@ -1,18 +1,32 @@
 package org.koenighotze.pdftool;
 
-import com.lowagie.text.*;
-import com.lowagie.text.pdf.*;
+import static com.lowagie.text.pdf.AcroFields.FIELD_TYPE_CHECKBOX;
+import static com.lowagie.text.pdf.AcroFields.FIELD_TYPE_COMBO;
+import static com.lowagie.text.pdf.AcroFields.FIELD_TYPE_LIST;
+import static com.lowagie.text.pdf.AcroFields.FIELD_TYPE_NONE;
+import static com.lowagie.text.pdf.AcroFields.FIELD_TYPE_PUSHBUTTON;
+import static com.lowagie.text.pdf.AcroFields.FIELD_TYPE_RADIOBUTTON;
+import static com.lowagie.text.pdf.AcroFields.FIELD_TYPE_SIGNATURE;
+import static com.lowagie.text.pdf.AcroFields.FIELD_TYPE_TEXT;
+import static java.lang.String.format;
+import static java.nio.file.Files.createTempFile;
+import static java.nio.file.Files.newInputStream;
+import static java.nio.file.Files.write;
+import static java.nio.file.StandardOpenOption.WRITE;
+import static java.util.Objects.requireNonNull;
 
-import java.io.*;
-import java.nio.file.*;
-import java.util.*;
-import java.util.concurrent.atomic.*;
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.nio.file.Path;
+import java.util.Set;
+import java.util.concurrent.atomic.AtomicInteger;
 
-import static com.lowagie.text.pdf.AcroFields.*;
-import static java.lang.String.*;
-import static java.nio.file.Files.*;
-import static java.nio.file.StandardOpenOption.*;
-import static java.util.Objects.*;
+import com.lowagie.text.DocumentException;
+import com.lowagie.text.pdf.AcroFields;
+import com.lowagie.text.pdf.PRAcroForm;
+import com.lowagie.text.pdf.PdfName;
+import com.lowagie.text.pdf.PdfReader;
+import com.lowagie.text.pdf.PdfStamper;
 
 /**
  * Stamper for acrofields in pdf forms.
@@ -61,7 +75,7 @@ public class Stamper {
 
         AcroFields fields = stamper.getAcroFields();
         @SuppressWarnings("unchecked") Set<String> set = fields.getFields().keySet();
-        set.stream().forEach(key -> {
+        set.forEach(key -> {
             try {
                 String val = usenum ? i.intValue() + "" : key;
 
@@ -77,12 +91,8 @@ public class Stamper {
         });
     }
 
-    private void logFieldDetails(AcroFields fields, String key) {
-
-    }
-
     private String getType(AcroFields fields, String key) {
-        String type = "unknown";
+        String type;
         switch (fields.getFieldType(key)) {
             case FIELD_TYPE_NONE:
                 type = "none";
@@ -130,7 +140,7 @@ public class Stamper {
         }
     }
 
-    public Path printPreFilledPdf(boolean usenum, boolean verbose) throws IOException, DocumentException {
+    Path printPreFilledPdf(boolean usenum, boolean verbose) throws IOException, DocumentException {
         byte[] doc = prefill(usenum, verbose);
 
         Path out = createTempFile("stamped", ".pdf");

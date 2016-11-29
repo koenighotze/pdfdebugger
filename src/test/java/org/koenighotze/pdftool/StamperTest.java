@@ -1,15 +1,22 @@
 package org.koenighotze.pdftool;
 
-import com.lowagie.text.*;
-import org.apache.pdfbox.pdmodel.*;
-import org.apache.pdfbox.util.*;
-import org.junit.*;
+import static org.fest.assertions.Assertions.assertThat;
 
-import java.io.*;
-import java.net.*;
-import java.nio.file.*;
+import java.io.BufferedOutputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.io.PrintStream;
+import java.net.URISyntaxException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 
-import static org.fest.assertions.Assertions.*;
+import com.lowagie.text.DocumentException;
+import org.apache.pdfbox.pdmodel.PDDocument;
+import org.apache.pdfbox.util.PDFTextStripper;
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
 
 /**
  * @author dschmitz
@@ -21,7 +28,7 @@ public class StamperTest {
     private ByteArrayOutputStream stdOutBos;
 
     @Before
-    public void setup() throws URISyntaxException {
+    public void setUp() throws URISyntaxException {
         path = Paths.get(StamperTest.class.getResource("interactiveform_enabled.pdf").toURI());
 
         originalOut = System.out;
