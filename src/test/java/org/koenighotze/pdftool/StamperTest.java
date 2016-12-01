@@ -22,7 +22,7 @@ import org.junit.Test;
  * @author dschmitz
  */
 public class StamperTest {
-    public static final String KNOWN_FIELD_NAME = "Name_Last";
+    private static final String KNOWN_FIELD_NAME = "Name_Last";
     private Path path;
     private PrintStream originalOut;
     private ByteArrayOutputStream stdOutBos;
@@ -59,6 +59,7 @@ public class StamperTest {
 
         assertThat(text).contains("Telephone_Work");
     }
+
 
     @Test
     public void the_form_fields_of_a_pdf_are_filled_with_consecutive_numbers_if_the_usename_flag_is_used() throws IOException, DocumentException {

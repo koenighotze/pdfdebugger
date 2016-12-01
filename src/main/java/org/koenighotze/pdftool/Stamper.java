@@ -14,19 +14,24 @@ import static java.nio.file.Files.newInputStream;
 import static java.nio.file.Files.write;
 import static java.nio.file.StandardOpenOption.WRITE;
 import static java.util.Objects.requireNonNull;
+import static javaslang.API.$;
+import static javaslang.API.Case;
+import static javaslang.API.Match;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.nio.file.Path;
 import java.util.Set;
-import java.util.concurrent.atomic.AtomicInteger;
 
 import com.lowagie.text.DocumentException;
 import com.lowagie.text.pdf.AcroFields;
 import com.lowagie.text.pdf.PRAcroForm;
+import com.lowagie.text.pdf.PRAcroForm.FieldInformation;
 import com.lowagie.text.pdf.PdfName;
 import com.lowagie.text.pdf.PdfReader;
 import com.lowagie.text.pdf.PdfStamper;
+import javaslang.collection.LinkedHashSet;
+import javaslang.control.Try;
 
 /**
  * Stamper for acrofields in pdf forms.
@@ -36,7 +41,7 @@ import com.lowagie.text.pdf.PdfStamper;
 public class Stamper {
     private final Path document;
 
-    public Stamper(Path path) {
+    Stamper(Path path) {
         this.document = requireNonNull(path);
     }
 
@@ -44,6 +49,7 @@ public class Stamper {
         PdfReader pdfReader = null;
         PdfStamper stamper = null;
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
+
         try {
             pdfReader = new PdfReader(newInputStream(document));
             PRAcroForm acroForm = pdfReader.getAcroForm();
@@ -53,75 +59,61 @@ public class Stamper {
             stamper.setFormFlattening(true);
 
             stampFields(acroForm, stamper, usenum, verbose);
-            baos.flush();
         } finally {
             closeStamper(stamper);
             closeReader(pdfReader);
         }
-
+        baos.flush();
         return baos.toByteArray();
     }
 
     @SuppressWarnings("unchecked")
     private void dumpDebugData(PRAcroForm acroForm, String field) {
-        PRAcroForm.FieldInformation info = acroForm.getField(field);
-        for (PdfName key : (Set<PdfName>) info.getInfo().getKeys()) {
-            System.out.println("\t-> " + key + " <-> " + info.getInfo().get(key));
-        }
+        FieldInformation info = acroForm.getField(field);
+        ((Set<PdfName>) info.getInfo().getKeys())
+            .forEach(key -> {
+                System.out.println("\t-> " + key + " <-> " + info.getInfo().get(key));
+            });
     }
 
+    @SuppressWarnings("unchecked")
     private void stampFields(PRAcroForm acroForm, PdfStamper stamper, boolean usenum, boolean verbose) {
-        final AtomicInteger i = new AtomicInteger();
-
         AcroFields fields = stamper.getAcroFields();
-        @SuppressWarnings("unchecked") Set<String> set = fields.getFields().keySet();
-        set.forEach(key -> {
-            try {
-                String val = usenum ? i.intValue() + "" : key;
+        LinkedHashSet.ofAll((Set<String>) fields.getFields().keySet())
+                     .foldLeft(0, (pos, key) -> stampField(acroForm, usenum, verbose, pos, fields, key));
+    }
 
-                System.out.println(format("Stamping key %s (%s) %s", key, getType(fields, key), usenum ? " as " + val : ""));
-                if (verbose) {
-                    dumpDebugData(acroForm, key);
-                }
-                fields.setField(key, val);
-                i.incrementAndGet();
-            } catch (IOException | DocumentException e) {
-                System.err.println(format("Cannot stamp field %s (%s)", key, e.getMessage()));
-            }
-        });
+    private int stampField(PRAcroForm acroForm, boolean usenum, boolean verbose, int fieldNumber, AcroFields fields, String key) {
+        String fieldIdentifier = usenum ? fieldNumber + "" : key;
+
+        logStamp(usenum, fields, key, fieldIdentifier);
+
+        if (verbose) {
+            dumpDebugData(acroForm, key);
+        }
+
+        Try.run(() -> fields.setField(key, fieldIdentifier))
+           .onFailure(t -> System.err.println(format("Cannot stamp field %s (%s)", key, t.getMessage())));
+
+        return fieldNumber + 1;
+    }
+
+    private void logStamp(boolean usenum, AcroFields fields, String key, String val) {
+        System.out.println(format("Stamping key %s (%s) %s", key, getType(fields, key), usenum ? " as " + val : ""));
     }
 
     private String getType(AcroFields fields, String key) {
-        String type;
-        switch (fields.getFieldType(key)) {
-            case FIELD_TYPE_NONE:
-                type = "none";
-                break;
-            case FIELD_TYPE_PUSHBUTTON:
-                type = "pushbutton";
-                break;
-            case FIELD_TYPE_CHECKBOX:
-                type = "checkbox";
-                break;
-            case FIELD_TYPE_RADIOBUTTON:
-                type = "radio";
-                break;
-            case FIELD_TYPE_TEXT:
-                type = "text";
-                break;
-            case FIELD_TYPE_LIST:
-                type = "list";
-                break;
-            case FIELD_TYPE_COMBO:
-                type = "combo";
-                break;
-            case FIELD_TYPE_SIGNATURE:
-                type = "signature";
-                break;
-            default:
-                type = "unknown";
-        }
-        return type;
+        return Match(fields.getFieldType(key)).of(
+            Case(FIELD_TYPE_NONE, "none"),
+            Case(FIELD_TYPE_PUSHBUTTON, "pushbutton"),
+            Case(FIELD_TYPE_CHECKBOX, "checkbox"),
+            Case(FIELD_TYPE_RADIOBUTTON, "radio"),
+            Case(FIELD_TYPE_TEXT, "text"),
+            Case(FIELD_TYPE_LIST, "list"),
+            Case(FIELD_TYPE_COMBO, "combo"),
+            Case(FIELD_TYPE_SIGNATURE, "signature"),
+            Case($(), "unknown")
+        );
     }
 
     private void closeReader(PdfReader pdfReader) {
@@ -131,13 +123,12 @@ public class Stamper {
     }
 
     private void closeStamper(PdfStamper stamper) {
-        if (stamper != null) {
-            try {
-                stamper.close();
-            } catch (DocumentException | IOException e) {
-                System.err.println(format("Cannot release stamper (%s)", e.getMessage()));
-            }
+        if (stamper == null) {
+            return;
         }
+
+        Try.run(stamper::close)
+           .onFailure(t -> System.err.println(format("Cannot release stamper (%s)", t.getMessage())));
     }
 
     Path printPreFilledPdf(boolean usenum, boolean verbose) throws IOException, DocumentException {
@@ -145,7 +136,6 @@ public class Stamper {
 
         Path out = createTempFile("stamped", ".pdf");
         write(out, doc, WRITE);
-        System.out.println(format("Result is here: %s", out.toAbsolutePath()));
 
         return out.toAbsolutePath();
     }
