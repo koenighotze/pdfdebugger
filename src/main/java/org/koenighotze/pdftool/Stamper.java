@@ -14,9 +14,9 @@ import static java.nio.file.Files.newInputStream;
 import static java.nio.file.Files.write;
 import static java.nio.file.StandardOpenOption.WRITE;
 import static java.util.Objects.requireNonNull;
-import static javaslang.API.$;
-import static javaslang.API.Case;
-import static javaslang.API.Match;
+import static io.vavr.API.$;
+import static io.vavr.API.Case;
+import static io.vavr.API.Match;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
@@ -30,8 +30,8 @@ import com.lowagie.text.pdf.PRAcroForm.FieldInformation;
 import com.lowagie.text.pdf.PdfName;
 import com.lowagie.text.pdf.PdfReader;
 import com.lowagie.text.pdf.PdfStamper;
-import javaslang.collection.LinkedHashSet;
-import javaslang.control.Try;
+import io.vavr.collection.LinkedHashSet;
+import io.vavr.control.Try;
 
 /**
  * Stamper for acrofields in pdf forms.
@@ -104,14 +104,14 @@ public class Stamper {
 
     private String getType(AcroFields fields, String key) {
         return Match(fields.getFieldType(key)).of(
-            Case(FIELD_TYPE_NONE, "none"),
-            Case(FIELD_TYPE_PUSHBUTTON, "pushbutton"),
-            Case(FIELD_TYPE_CHECKBOX, "checkbox"),
-            Case(FIELD_TYPE_RADIOBUTTON, "radio"),
-            Case(FIELD_TYPE_TEXT, "text"),
-            Case(FIELD_TYPE_LIST, "list"),
-            Case(FIELD_TYPE_COMBO, "combo"),
-            Case(FIELD_TYPE_SIGNATURE, "signature"),
+            Case($(FIELD_TYPE_NONE), "none"),
+            Case($(FIELD_TYPE_PUSHBUTTON), "pushbutton"),
+            Case($(FIELD_TYPE_CHECKBOX), "checkbox"),
+            Case($(FIELD_TYPE_RADIOBUTTON), "radio"),
+            Case($(FIELD_TYPE_TEXT), "text"),
+            Case($(FIELD_TYPE_LIST), "list"),
+            Case($(FIELD_TYPE_COMBO), "combo"),
+            Case($(FIELD_TYPE_SIGNATURE), "signature"),
             Case($(), "unknown")
         );
     }

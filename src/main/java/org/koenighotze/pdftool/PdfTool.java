@@ -4,18 +4,13 @@ import static java.lang.String.format;
 import static java.nio.file.Files.exists;
 import static org.apache.commons.cli.Option.builder;
 
-import java.io.IOException;
-import java.nio.file.Path;
-import java.nio.file.Paths;
+import java.io.*;
+import java.nio.file.*;
 
-import com.lowagie.text.DocumentException;
-import javaslang.Tuple;
-import javaslang.Tuple3;
-import javaslang.control.Try;
-import org.apache.commons.cli.CommandLine;
-import org.apache.commons.cli.DefaultParser;
-import org.apache.commons.cli.HelpFormatter;
-import org.apache.commons.cli.Options;
+import com.lowagie.text.*;
+import io.vavr.*;
+import io.vavr.control.*;
+import org.apache.commons.cli.*;
 
 /**
  * Simple tool for pre-stamping a PDF form with the keys of the fields as their
@@ -26,10 +21,18 @@ import org.apache.commons.cli.Options;
 public class PdfTool {
 
     public static void main(String[] args) throws IOException, DocumentException {
-        Options options = new Options()
-            .addOption(builder().longOpt("verbose").desc("verbose output").build())
-            .addOption(builder().longOpt("numbers").desc("print numbers instead of names").build())
-            .addOption(builder().longOpt("file").required().argName("PdfDoc").desc("the pdf document").hasArg().build());
+        Options options = new Options().addOption(builder().longOpt("verbose")
+                                                           .desc("verbose output")
+                                                           .build())
+                                       .addOption(builder().longOpt("numbers")
+                                                           .desc("print numbers instead of names")
+                                                           .build())
+                                       .addOption(builder().longOpt("file")
+                                                           .required()
+                                                           .argName("PdfDoc")
+                                                           .desc("the pdf document")
+                                                           .hasArg()
+                                                           .build());
 
         Try.of(() -> new DefaultParser().parse(options, args))
            .onFailure(ex -> printUsage(options))
