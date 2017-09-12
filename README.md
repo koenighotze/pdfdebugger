@@ -2,9 +2,7 @@
 
 Simple tool for pre-stamping a pdf form.
 
-Current build status: [![Build Status](https://travis-ci.org/koenighotze/pdfdebugger.svg?branch=master)](https://travis-ci.org/koenighotze/pdfdebugger)  
-
-[![Codacy Badge](https://api.codacy.com/project/badge/Grade/2082d38336fa495c8a91851ebb297793)](https://www.codacy.com/app/david-schmitz-privat/pdfdebugger?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=koenighotze/pdfdebugger&amp;utm_campaign=Badge_Grade)
+Current build status: [![Build Status](https://travis-ci.org/koenighotze/pdfdebugger.svg?branch=master)](https://travis-ci.org/koenighotze/pdfdebugger)  [![Codacy Badge](https://api.codacy.com/project/badge/Grade/2082d38336fa495c8a91851ebb297793)](https://www.codacy.com/app/david-schmitz-privat/pdfdebugger?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=koenighotze/pdfdebugger&amp;utm_campaign=Badge_Grade)
 
 Build it like this: 
 
