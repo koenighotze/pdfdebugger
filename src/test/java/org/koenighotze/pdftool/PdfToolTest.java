@@ -2,18 +2,13 @@ package org.koenighotze.pdftool;
 
 import static java.lang.System.setErr;
 import static java.lang.System.setOut;
-import static org.fest.assertions.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.koenighotze.pdftool.PdfTool.main;
 
-import java.io.BufferedOutputStream;
-import java.io.ByteArrayOutputStream;
-import java.io.IOException;
-import java.io.PrintStream;
+import java.io.*;
 
-import com.lowagie.text.DocumentException;
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
+import com.lowagie.text.*;
+import org.junit.*;
 
 /**
  * @author dschmitz

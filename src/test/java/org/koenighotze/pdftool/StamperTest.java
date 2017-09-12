@@ -1,22 +1,15 @@
 package org.koenighotze.pdftool;
 
-import static org.fest.assertions.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThat;
 
-import java.io.BufferedOutputStream;
-import java.io.ByteArrayOutputStream;
-import java.io.IOException;
-import java.io.PrintStream;
-import java.net.URISyntaxException;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
+import java.io.*;
+import java.net.*;
+import java.nio.file.*;
 
-import com.lowagie.text.DocumentException;
-import org.apache.pdfbox.pdmodel.PDDocument;
-import org.apache.pdfbox.util.PDFTextStripper;
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
+import com.lowagie.text.*;
+import org.apache.pdfbox.pdmodel.*;
+import org.apache.pdfbox.util.*;
+import org.junit.*;
 
 /**
  * @author dschmitz
@@ -29,7 +22,8 @@ public class StamperTest {
 
     @Before
     public void setUp() throws URISyntaxException {
-        path = Paths.get(StamperTest.class.getResource("interactiveform_enabled.pdf").toURI());
+        path = Paths.get(StamperTest.class.getResource("interactiveform_enabled.pdf")
+                                          .toURI());
 
         originalOut = System.out;
         stdOutBos = new ByteArrayOutputStream();
@@ -59,7 +53,6 @@ public class StamperTest {
 
         assertThat(text).contains("Telephone_Work");
     }
-
 
     @Test
     public void the_form_fields_of_a_pdf_are_filled_with_consecutive_numbers_if_the_usename_flag_is_used() throws IOException, DocumentException {

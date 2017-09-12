@@ -33,3 +33,4 @@ The result file contains the stamped version.
 
 
 
+Todo: https://danielflower.github.io/2015/01/29/Generating-a-Maven-plugin-site-and-publishing-to-Github-Pages.html
