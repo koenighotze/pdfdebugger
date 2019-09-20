@@ -8,6 +8,7 @@ import java.nio.file.*;
 
 import com.lowagie.text.*;
 import org.apache.pdfbox.pdmodel.*;
+import org.apache.pdfbox.text.*;
 import org.apache.pdfbox.util.*;
 import org.junit.*;
 
