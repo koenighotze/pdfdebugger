@@ -1,8 +1,29 @@
-# pdfdebugger
+# PDF Debugger
 
 Simple tool for pre-stamping a pdf form.
 
 Current build status: [![Build Status](https://travis-ci.org/koenighotze/pdfdebugger.svg?branch=master)](https://travis-ci.org/koenighotze/pdfdebugger)  [![Codacy Badge](https://api.codacy.com/project/badge/Grade/2082d38336fa495c8a91851ebb297793)](https://www.codacy.com/app/david-schmitz-privat/pdfdebugger?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=koenighotze/pdfdebugger&amp;utm_campaign=Badge_Grade)
+
+## Usage
+
+There is a Docker version available on [Docker Hub](https://cloud.docker.com/u/koenighotze/repository/docker/koenighotze/pdfdebugger).
+
+You can use it like this:
+
+```bash
+$ docker run --rm=true -v ${PWD}:/app/in -v ${PWD}/out:/app/out koenighotze/pdfdebugger:2.0 --file /app/in/interactiveform_enabled.pdf
+PDF is in Version 6 and has 1 pages
+Stamping key ZIP (text)
+...
+Stamping key Emergency_Contact (text)
+Result is here: /app/out/stamped2668326534888947129pdf
+```
+
+There are two volumes `/app/in`, which should contain the input-PDF and `/app/out` which will contain the stamped PDF file.
+
+See below for building and running a local version.
+
+## Building
 
 Build it like this: 
 
@@ -28,10 +49,3 @@ Result is here: /var/folders/fj/m9dg31412tgg3v1l3ly23145t6j5nw/T/stamped89923160
 ```
 
 The result file contains the stamped version.
-
-
-
-Todo: https://danielflower.github.io/2015/01/29/Generating-a-Maven-plugin-site-and-publishing-to-Github-Pages.html
-
-
-https://github.com/codacy/codacy-coverage-reporter#setup

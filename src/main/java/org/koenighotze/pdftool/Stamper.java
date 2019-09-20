@@ -127,8 +127,13 @@ public class Stamper {
 
     Path printPreFilledPdf(boolean usenum, boolean verbose) throws IOException, DocumentException {
         byte[] doc = prefill(usenum, verbose);
+        String outputDir = System.getenv("OUTPUT_DIR");
+        if (outputDir == null) {
+            outputDir = System.getProperty("java.io.tmpdir");
+        }
 
-        Path out = createTempFile("stamped", ".pdf");
+        Path out = Files.createTempFile(Path.of(outputDir), "stamped", "pdf");
+                //createTempFile("stamped", ".pdf");
         write(out, doc, WRITE);
 
         return out.toAbsolutePath();
