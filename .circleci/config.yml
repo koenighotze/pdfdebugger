@@ -14,7 +14,7 @@ jobs:
             - ~/.m2
           key: circleci-pdfdebugger-{{ checksum "pom.xml" }}
       - run: mvn package
-      - store_test_results:
-          path: target/surefire-reports
-      - store_artifacts:
-          path: target/pdftool-2.0-SNAPSHOT.jar
+#      - store_test_results:
+#          path: target/surefire-reports
+#      - store_artifacts:
+#          path: target/pdftool-2.0-SNAPSHOT.jar
