@@ -9,8 +9,7 @@ import java.nio.file.*;
 import com.lowagie.text.*;
 import org.apache.pdfbox.pdmodel.*;
 import org.apache.pdfbox.text.*;
-import org.apache.pdfbox.util.*;
-import org.junit.*;
+import org.junit.jupiter.api.*;
 
 /**
  * @author dschmitz
@@ -21,7 +20,7 @@ public class StamperTest {
     private PrintStream originalOut;
     private ByteArrayOutputStream stdOutBos;
 
-    @Before
+    @BeforeEach
     public void setUp() throws URISyntaxException {
         path = Paths.get(StamperTest.class.getResource("interactiveform_enabled.pdf")
                                           .toURI());
@@ -31,7 +30,7 @@ public class StamperTest {
         System.setOut(new PrintStream(new BufferedOutputStream(stdOutBos), true));
     }
 
-    @After
+    @AfterEach
     public void tearDown() {
         if (null != originalOut) {
             System.setOut(originalOut);

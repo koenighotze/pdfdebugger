@@ -8,7 +8,8 @@ import static org.koenighotze.pdftool.PdfTool.main;
 import java.io.*;
 
 import com.lowagie.text.*;
-import org.junit.*;
+import org.junit.jupiter.api.*;
+import org.junit.jupiter.api.Test;
 
 /**
  * @author dschmitz
@@ -20,7 +21,7 @@ public class PdfToolTest {
     private PrintStream originalErr;
     private ByteArrayOutputStream stdErrBos;
 
-    @Before
+    @BeforeEach
     public void setUp() throws IOException, DocumentException {
         originalOut = System.out;
         stdOutBos = new ByteArrayOutputStream();
@@ -31,7 +32,7 @@ public class PdfToolTest {
         setErr(new PrintStream(new BufferedOutputStream(stdErrBos), true));
     }
 
-    @After
+    @AfterEach
     public void tearDown() {
         if (null != originalOut) {
             setOut(originalOut);
