@@ -66,12 +66,16 @@
       <version>${itext.version}</version>
       <exclusions>
         <exclusion>
-          <groupId>org.bouncycastle</groupId>
+          <groupId>bouncycastle</groupId>
           <artifactId>bctsp-jdk14</artifactId>
         </exclusion>
         <exclusion>
-          <groupId>org.bouncycastle</groupId>
+          <groupId>bouncycastle</groupId>
           <artifactId>bcprov-jdk14</artifactId>
+        </exclusion>
+        <exclusion>
+          <groupId>bouncycastle</groupId>
+          <artifactId>bcmail-jdk14</artifactId>
         </exclusion>
       </exclusions>
     </dependency>
@@ -83,7 +87,7 @@
     <dependency>
       <groupId>org.bouncycastle</groupId>
       <artifactId>bcprov-jdk14</artifactId>
-      <version>1.63</version>
+      <version>1.64</version>
     </dependency>
     <dependency>
       <groupId>org.junit.jupiter</groupId>
