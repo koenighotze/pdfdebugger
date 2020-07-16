@@ -1,8 +1,8 @@
 name: Docker build
 
 on:
-  push:
-    tags: *
+  create:
+    tags: "*"
 
 jobs:
   jib build:
