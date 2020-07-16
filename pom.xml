@@ -43,7 +43,7 @@
     <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
     <main.class>org.koenighotze.pdftool.PdfTool</main.class>
 
-    <docker.tag>2.1</docker.tag>
+    <docker.tag>${project.version}</docker.tag>
     <itext.version>2.1.7</itext.version>
     <junit.version>5.7.0-M1</junit.version>
     <junit.platform.version>1.7.0-M1</junit.platform.version>
@@ -238,10 +238,11 @@
         <version>1.6.1</version>
         <configuration>
           <to>
-            <image>koenighotze/pdfdebugger</image>
+            <image>docker.io/koenighotze/pdfdebugger</image>
             <tags>
               <tag>${docker.tag}</tag>
             </tags>
+            <credHelper>ecr-login</credHelper>
           </to>
           <container>
             <jvmFlags>

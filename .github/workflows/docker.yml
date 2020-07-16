@@ -1,0 +1,25 @@
+name: Docker build
+
+on:
+  push:
+    tags: *
+
+jobs:
+  jib build:
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v2
+
+    - uses: actions/setup-java@v1
+      with:
+        java-version: 11
+
+    - uses: actions/cache@v2
+      with:
+        path: ~/.m2
+        key: ${{ runner.os }}-m2-${{ hashFiles('**/pom.xml') }}
+        restore-keys: ${{ runner.os }}-m2
+
+    - name: Jib
+      run: mvn compile jib:build -docker.tag=::${GITHUB_REF#refs/tags/} -Djib.to.auth.username=${{ secrets.DOCKER_USERNAME }} -Djib.to.auth.password=${{ secrets.DOCKER_PASSWORD }}
