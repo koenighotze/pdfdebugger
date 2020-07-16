@@ -22,4 +22,4 @@ jobs:
         restore-keys: ${{ runner.os }}-m2
 
     - name: Jib
-      run: mvn compile jib:build -docker.tag=::${GITHUB_REF#refs/tags/} -Djib.to.auth.username=${{ secrets.DOCKER_USERNAME }} -Djib.to.auth.password=${{ secrets.DOCKER_PASSWORD }}
+      run: mvn compile jib:build -Ddocker.tag=${GITHUB_REF#refs/tags/} -Djib.to.auth.username=${{ secrets.DOCKER_USERNAME }} -Djib.to.auth.password=${{ secrets.DOCKER_PASSWORD }}
