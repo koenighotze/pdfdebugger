@@ -43,15 +43,15 @@
     <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
     <main.class>org.koenighotze.pdftool.PdfTool</main.class>
 
-    <docker.tag>2.0</docker.tag>
+    <docker.tag>2.1</docker.tag>
     <itext.version>2.1.7</itext.version>
-    <junit.version>5.5.2</junit.version>
-    <junit.platform.version>1.5.2</junit.platform.version>
-    <assertj.version>3.13.2</assertj.version>
-    <pdfbox.version>2.0.16</pdfbox.version>
+    <junit.version>5.7.0-M1</junit.version>
+    <junit.platform.version>1.7.0-M1</junit.platform.version>
+    <assertj.version>3.16.1</assertj.version>
+    <pdfbox.version>2.0.20</pdfbox.version>
     <commons-cli.version>1.4</commons-cli.version>
     <shade-plugin.version>2.4.1</shade-plugin.version>
-    <vavr.version>0.9.1</vavr.version>
+    <vavr.version>1.0.0-alpha-3</vavr.version>
   </properties>
 
   <dependencies>
@@ -87,7 +87,7 @@
     <dependency>
       <groupId>org.bouncycastle</groupId>
       <artifactId>bcprov-jdk14</artifactId>
-      <version>1.64</version>
+      <version>1.65</version>
     </dependency>
     <dependency>
       <groupId>org.junit.jupiter</groupId>
@@ -157,7 +157,7 @@
           <dependency>
             <groupId>org.apache.bcel</groupId>
             <artifactId>bcel</artifactId>
-            <version>6.3.1</version>
+            <version>6.5.0</version>
           </dependency>
           <dependency>
             <groupId>com.google.code.findbugs</groupId>
@@ -170,7 +170,7 @@
       <plugin>
         <groupId>org.jacoco</groupId>
         <artifactId>jacoco-maven-plugin</artifactId>
-        <version>0.8.4</version>
+        <version>0.8.5</version>
         <executions>
           <execution>
             <id>default-prepare-agent</id>
