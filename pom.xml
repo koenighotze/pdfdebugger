@@ -48,7 +48,7 @@
     <junit.version>5.7.0-M1</junit.version>
     <junit.platform.version>1.7.0-M1</junit.platform.version>
     <assertj.version>3.16.1</assertj.version>
-    <pdfbox.version>2.0.20</pdfbox.version>
+    <pdfbox.version>2.0.24</pdfbox.version>
     <commons-cli.version>1.4</commons-cli.version>
     <shade-plugin.version>2.4.1</shade-plugin.version>
     <vavr.version>1.0.0-alpha-3</vavr.version>
