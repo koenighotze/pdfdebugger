@@ -2,7 +2,9 @@
 
 Simple tool for pre-stamping a pdf form.
 
-Current build status: [![CircleCI](https://circleci.com/gh/koenighotze/pdfdebugger.svg?style=svg)](https://circleci.com/gh/koenighotze/pdfdebugger)  [![Codacy Badge](https://api.codacy.com/project/badge/Grade/2082d38336fa495c8a91851ebb297793)](https://www.codacy.com/app/david-schmitz-privat/pdfdebugger?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=koenighotze/pdfdebugger&amp;utm_campaign=Badge_Grade)
+[![CI](https://github.com/koenighotze/pdfdebugger/actions/workflows/ci.yml/badge.svg)](https://github.com/koenighotze/pdfdebugger/actions/workflows/ci.yml)
+[![Docker build](https://github.com/koenighotze/pdfdebugger/actions/workflows/docker.yml/badge.svg)](https://github.com/koenighotze/pdfdebugger/actions/workflows/docker.yml)
+[![Codacy Badge](https://app.codacy.com/project/badge/Grade/2082d38336fa495c8a91851ebb297793)](https://www.codacy.com/gh/koenighotze/pdfdebugger/dashboard?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=koenighotze/pdfdebugger&amp;utm_campaign=Badge_Grade)
 
 ## Usage
 
