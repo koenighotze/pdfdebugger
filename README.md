@@ -5,6 +5,8 @@ Simple tool for pre-stamping a pdf form.
 [![CI](https://github.com/koenighotze/pdfdebugger/actions/workflows/ci.yml/badge.svg)](https://github.com/koenighotze/pdfdebugger/actions/workflows/ci.yml)
 [![Docker build](https://github.com/koenighotze/pdfdebugger/actions/workflows/docker.yml/badge.svg)](https://github.com/koenighotze/pdfdebugger/actions/workflows/docker.yml)
 [![Codacy Badge](https://app.codacy.com/project/badge/Grade/2082d38336fa495c8a91851ebb297793)](https://www.codacy.com/gh/koenighotze/pdfdebugger/dashboard?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=koenighotze/pdfdebugger&amp;utm_campaign=Badge_Grade)
+[![Codacy Badge](https://app.codacy.com/project/badge/Grade/2082d38336fa495c8a91851ebb297793)](https://www.codacy.com/gh/koenighotze/pdfdebugger/dashboard?utm_source=github.com&utm_medium=referral&utm_content=koenighotze/pdfdebugger&utm_campaign=Badge_Coverage)
+
 
 ## Usage
 
@@ -27,7 +29,7 @@ See below for building and running a local version.
 
 ## Building
 
-Build it like this: 
+Build it like this:
 
 ```bash
 $ mvn package
