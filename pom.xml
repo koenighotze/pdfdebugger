@@ -51,7 +51,7 @@
     <junit.version>5.10.0</junit.version>
     <junit.platform.version>1.10.0</junit.platform.version>
     <assertj.version>3.24.2</assertj.version>
-    <pdfbox.version>2.0.27</pdfbox.version>
+    <pdfbox.version>3.0.0</pdfbox.version>
     <commons-cli.version>1.5.0</commons-cli.version>
     <vavr.version>1.0.0-alpha-4</vavr.version>
     <bcprov-jdk14.version>1.76</bcprov-jdk14.version>
