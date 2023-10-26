@@ -53,3 +53,14 @@ Result is here: /var/folders/fj/m9dg31412tgg3v1l3ly23145t6j5nw/T/stamped89923160
 ```
 
 The result file contains the stamped version.
+
+
+## TODO
+
+[ ] Move to Java 21
+[ ] Container scan and upload
+[ ] Profiling
+[ ] Integration test
+[ ] Upload Javadoc and Release
+
+    
