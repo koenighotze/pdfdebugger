@@ -62,5 +62,5 @@ The result file contains the stamped version.
 [ ] Profiling
 [ ] Integration test
 [ ] Upload Javadoc and Release
-
+[ ] Setup commit sign force
     
