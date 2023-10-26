@@ -12,11 +12,13 @@ jobs:
     runs-on: ubuntu-20.04
 
     steps:
-      - uses: actions/checkout@v3
+      - name: Checkout
+        uses: actions/checkout@v3
 
-      - uses: actions/setup-java@v1
+      - name: Setup Java
+        uses: actions/setup-java@v1
         with:
-          java-version: 11
+          java-version: 17
 
       - uses: actions/cache@v2
         with:
@@ -24,13 +26,14 @@ jobs:
           key: ${{ runner.os }}-m2-${{ hashFiles('**/pom.xml') }}
           restore-keys: ${{ runner.os }}-m2
 
-      - run: mvn --no-transfer-progress test
+      - name: Unit test
+        run: ./mvnw --no-transfer-progress test
 
-      - name: Run codacy-coverage-reporter
+      - name: Upload coverage report
         uses: codacy/codacy-coverage-reporter-action@v1
         with:
           project-token: ${{ secrets.CODACY_PROJECT_TOKEN }}
           coverage-reports: target/coverage-reports/jacoco-ut/jacoco.xml
 
       - name: Package
-        run: mvn --no-transfer-progress package
+        run: ./mvnw --no-transfer-progress package
