@@ -49,7 +49,7 @@ public class PdfToolTest {
     public void calling_the_main_method_without_args_prints_the_usage() throws IOException, DocumentException {
         main(new String[]{});
 
-        assertThat(stdOutBos.toString("UTF-8")).contains("usage");
+        assertThat(stdOutBos.toString(UTF_8)).contains("usage");
     }
 
     @Test

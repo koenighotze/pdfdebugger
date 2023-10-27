@@ -3,20 +3,16 @@ package org.koenighotze.pdftool;
 import com.lowagie.text.DocumentException;
 import com.lowagie.text.pdf.*;
 import com.lowagie.text.pdf.PRAcroForm.FieldInformation;
-import io.vavr.collection.LinkedHashSet;
-import io.vavr.control.Try;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.Set;
+import java.util.function.BinaryOperator;
 
 import static com.lowagie.text.pdf.AcroFields.*;
-import static io.vavr.API.*;
-import static java.lang.String.format;
-import static java.nio.file.Files.newInputStream;
-import static java.nio.file.Files.write;
+import static java.nio.file.Files.*;
 import static java.nio.file.StandardOpenOption.WRITE;
 import static java.util.Objects.requireNonNull;
 
@@ -40,13 +36,13 @@ public class Stamper {
         try {
             pdfReader = new PdfReader(newInputStream(document));
             PRAcroForm acroForm = pdfReader.getAcroForm();
-            System.out.println(format("PDF is in Version %s and has %s pages", pdfReader.getPdfVersion(),
-                                      pdfReader.getNumberOfPages()));
+            System.out.printf("PDF is in Version %s and has %s pages%n", pdfReader.getPdfVersion(),
+                                      pdfReader.getNumberOfPages());
 
             stamper = new PdfStamper(pdfReader, baos);
             stamper.setFormFlattening(true);
 
-            stampFields(acroForm, stamper, usenum, verbose);
+            System.out.println(stampFields(acroForm, stamper, usenum, verbose));
         } finally {
             closeStamper(stamper);
             closeReader(pdfReader);
@@ -66,40 +62,47 @@ public class Stamper {
     }
 
     @SuppressWarnings("unchecked")
-    private void stampFields(PRAcroForm acroForm, PdfStamper stamper, boolean usenum, boolean verbose) {
+    private int stampFields(PRAcroForm acroForm, PdfStamper stamper, boolean useNumbers, boolean verbose) {
         AcroFields fields = stamper.getAcroFields();
-        LinkedHashSet.ofAll((Set<String>) fields.getFields()
-                                                .keySet())
-                     .foldLeft(0, (pos, key) -> stampField(acroForm, usenum, verbose, pos, fields, key));
+
+        var fieldKeys = (Set<String>) fields.getFields().keySet();
+        return fieldKeys.stream().reduce(0, (pos, key) -> stampField(acroForm, useNumbers, verbose, pos, fields, key), Integer::sum);
     }
 
-    private int stampField(PRAcroForm acroForm, boolean usenum, boolean verbose, int fieldNumber, AcroFields fields, String key) {
-        String fieldIdentifier = usenum ? fieldNumber + "" : key;
+    private int stampField(PRAcroForm acroForm, boolean useNumbers, boolean verbose, int fieldNumber, AcroFields fields, String key) {
+        String fieldIdentifier = useNumbers ? fieldNumber + "" : key;
 
-        logStamp(usenum, fields, key, fieldIdentifier);
+        logStamp(useNumbers, fields, key, fieldIdentifier);
 
         if (verbose) {
             dumpDebugData(acroForm, key);
         }
 
-        Try.run(() -> fields.setField(key, fieldIdentifier))
-           .onFailure(t -> System.err.printf("Cannot stamp field %s (%s)%n", key, t.getMessage()));
+        try {
+            fields.setField(key, fieldIdentifier);
+        } catch (IOException | DocumentException e) {
+            System.err.printf("Cannot stamp field %s (%s)%n", key, e.getMessage());
+        }
 
         return fieldNumber + 1;
     }
 
-    private void logStamp(boolean usenum, AcroFields fields, String key, String val) {
-        System.out.printf("Stamping key %s (%s) %s%n", key, getType(fields, key), usenum ? " as " + val : "");
+    private void logStamp(boolean useNumbers, AcroFields fields, String key, String val) {
+        System.out.printf("Stamping key %s (%s) %s%n", key, getType(fields, key), useNumbers ? " as " + val : "");
     }
 
     private String getType(AcroFields fields, String key) {
-        return Match(fields.getFieldType(key)).of(Case($(FIELD_TYPE_NONE), "none"),
-                                                  Case($(FIELD_TYPE_PUSHBUTTON), "pushbutton"),
-                                                  Case($(FIELD_TYPE_CHECKBOX), "checkbox"),
-                                                  Case($(FIELD_TYPE_RADIOBUTTON), "radio"),
-                                                  Case($(FIELD_TYPE_TEXT), "text"), Case($(FIELD_TYPE_LIST), "list"),
-                                                  Case($(FIELD_TYPE_COMBO), "combo"),
-                                                  Case($(FIELD_TYPE_SIGNATURE), "signature"), Case($(), "unknown"));
+        return switch (fields.getFieldType(key)) {
+            case FIELD_TYPE_NONE -> "none";
+            case FIELD_TYPE_PUSHBUTTON -> "pushbutton";
+            case FIELD_TYPE_CHECKBOX -> "checkbox";
+            case FIELD_TYPE_RADIOBUTTON -> "radio";
+            case FIELD_TYPE_TEXT, FIELD_TYPE_LIST -> "list";
+            case FIELD_TYPE_COMBO -> "combo";
+            case FIELD_TYPE_SIGNATURE -> "signature";
+
+            default -> "unknown";
+        };
     }
 
     private void closeReader(PdfReader pdfReader) {
@@ -113,19 +116,21 @@ public class Stamper {
             return;
         }
 
-        Try.run(stamper::close)
-           .onFailure(t -> System.err.printf("Cannot release stamper (%s)%n", t.getMessage()));
+        try {
+            stamper.close();
+        } catch (IOException | DocumentException e) {
+            System.err.printf("Cannot release stamper (%s)%n", e.getMessage());
+        }
     }
 
-    Path printPreFilledPdf(boolean usenum, boolean verbose) throws IOException, DocumentException {
-        byte[] doc = prefill(usenum, verbose);
+    Path printPreFilledPdf(boolean useNumbers, boolean verbose) throws IOException, DocumentException {
+        byte[] doc = prefill(useNumbers, verbose);
         String outputDir = System.getenv("OUTPUT_DIR");
         if (outputDir == null) {
             outputDir = System.getProperty("java.io.tmpdir");
         }
 
-        Path out = Files.createTempFile(Path.of(outputDir), "stamped", "pdf");
-                //createTempFile("stamped", ".pdf");
+        Path out = createTempFile(Path.of(outputDir), "stamped", ".pdf");
         write(out, doc, WRITE);
 
         return out.toAbsolutePath();
