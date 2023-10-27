@@ -1,32 +1,24 @@
 package org.koenighotze.pdftool;
 
-import static com.lowagie.text.pdf.AcroFields.FIELD_TYPE_CHECKBOX;
-import static com.lowagie.text.pdf.AcroFields.FIELD_TYPE_COMBO;
-import static com.lowagie.text.pdf.AcroFields.FIELD_TYPE_LIST;
-import static com.lowagie.text.pdf.AcroFields.FIELD_TYPE_NONE;
-import static com.lowagie.text.pdf.AcroFields.FIELD_TYPE_PUSHBUTTON;
-import static com.lowagie.text.pdf.AcroFields.FIELD_TYPE_RADIOBUTTON;
-import static com.lowagie.text.pdf.AcroFields.FIELD_TYPE_SIGNATURE;
-import static com.lowagie.text.pdf.AcroFields.FIELD_TYPE_TEXT;
-import static io.vavr.API.$;
-import static io.vavr.API.Case;
-import static io.vavr.API.Match;
+import com.lowagie.text.DocumentException;
+import com.lowagie.text.pdf.*;
+import com.lowagie.text.pdf.PRAcroForm.FieldInformation;
+import io.vavr.collection.LinkedHashSet;
+import io.vavr.control.Try;
+
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.util.Set;
+
+import static com.lowagie.text.pdf.AcroFields.*;
+import static io.vavr.API.*;
 import static java.lang.String.format;
-import static java.nio.file.Files.createTempFile;
 import static java.nio.file.Files.newInputStream;
 import static java.nio.file.Files.write;
 import static java.nio.file.StandardOpenOption.WRITE;
 import static java.util.Objects.requireNonNull;
-
-import java.io.*;
-import java.nio.file.*;
-import java.util.Set;
-
-import com.lowagie.text.*;
-import com.lowagie.text.pdf.*;
-import com.lowagie.text.pdf.PRAcroForm.*;
-import io.vavr.collection.LinkedHashSet;
-import io.vavr.control.*;
 
 /**
  * Stamper for acrofields in pdf forms.
@@ -91,13 +83,13 @@ public class Stamper {
         }
 
         Try.run(() -> fields.setField(key, fieldIdentifier))
-           .onFailure(t -> System.err.println(format("Cannot stamp field %s (%s)", key, t.getMessage())));
+           .onFailure(t -> System.err.printf("Cannot stamp field %s (%s)%n", key, t.getMessage()));
 
         return fieldNumber + 1;
     }
 
     private void logStamp(boolean usenum, AcroFields fields, String key, String val) {
-        System.out.println(format("Stamping key %s (%s) %s", key, getType(fields, key), usenum ? " as " + val : ""));
+        System.out.printf("Stamping key %s (%s) %s%n", key, getType(fields, key), usenum ? " as " + val : "");
     }
 
     private String getType(AcroFields fields, String key) {
@@ -122,7 +114,7 @@ public class Stamper {
         }
 
         Try.run(stamper::close)
-           .onFailure(t -> System.err.println(format("Cannot release stamper (%s)", t.getMessage())));
+           .onFailure(t -> System.err.printf("Cannot release stamper (%s)%n", t.getMessage()));
     }
 
     Path printPreFilledPdf(boolean usenum, boolean verbose) throws IOException, DocumentException {

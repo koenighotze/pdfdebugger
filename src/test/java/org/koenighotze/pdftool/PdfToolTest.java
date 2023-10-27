@@ -2,10 +2,12 @@ package org.koenighotze.pdftool;
 
 import static java.lang.System.setErr;
 import static java.lang.System.setOut;
+import static java.nio.charset.StandardCharsets.*;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.koenighotze.pdftool.PdfTool.main;
 
 import java.io.*;
+import java.nio.charset.StandardCharsets;
 
 import com.lowagie.text.*;
 import org.junit.jupiter.api.*;
@@ -54,14 +56,14 @@ public class PdfToolTest {
     public void calling_the_main_method_with_more_than_2_args_prints_the_usage() throws IOException, DocumentException {
         main(new String[]{"bla", "blub", "tuk"});
 
-        assertThat(stdOutBos.toString("UTF-8")).contains("usage");
+        assertThat(stdOutBos.toString(UTF_8)).contains("usage");
     }
 
     @Test
     public void if_the_pdf_does_not_exist_no_exception_is_thrown() throws IOException, DocumentException {
         main(new String[]{"--file", "blafasel"});
-        System.out.println(stdOutBos.toString("UTF-8"));
-        assertThat(stdErrBos.toString("UTF-8")).contains("File does not exist!");
+        System.out.println(stdOutBos.toString(UTF_8));
+        assertThat(stdErrBos.toString(UTF_8)).contains("does not exist!");
     }
 
 }

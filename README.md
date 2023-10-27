@@ -57,10 +57,12 @@ The result file contains the stamped version.
 
 ## TODO
 
-[ ] Move to Java 21
-[ ] Container scan and upload
-[ ] Profiling
-[ ] Integration test
-[ ] Upload Javadoc and Release
-[ ] Setup commit sign force
-    
+- [ ] Move to Java 21
+- [ ] Container scan and upload
+- [ ] Profiling
+- [ ] Integration test
+- [ ] Upload Javadoc and Release
+- [x] Setup commit sign force
+- [ ] More linting
+- [ ] Drop iText
+- [ ] Drop vavr

@@ -17,12 +17,6 @@ jobs:
           distribution: temurin
           cache: maven
 
-#      - uses: actions/cache@v3
-#        with:
-#          path: ~/.m2
-#          key: ${{ runner.os }}-m2-${{ hashFiles('**/pom.xml') }}
-#          restore-keys: ${{ runner.os }}-m2
-
       # Split push and validate
       - name: Jib
         run: ./mvnw --no-transfer-progress package jib:build -Ddocker.tag=${GITHUB_REF#refs/tags/} -Djib.to.auth.username=${{ secrets.DOCKER_USERNAME }} -Djib.to.auth.password=${{ secrets.DOCKER_PASSWORD }}
