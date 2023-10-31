@@ -1,4 +1,4 @@
-package org.koenighotze.pdftool;
+package org.koenighotze.pdftool.stamper;
 
 import com.lowagie.text.DocumentException;
 import com.lowagie.text.pdf.*;
@@ -6,10 +6,8 @@ import com.lowagie.text.pdf.PRAcroForm.FieldInformation;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
-import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.Set;
-import java.util.function.BinaryOperator;
 
 import static com.lowagie.text.pdf.AcroFields.*;
 import static java.nio.file.Files.*;
@@ -22,19 +20,13 @@ import static java.util.Objects.requireNonNull;
  * @author dschmitz
  */
 public class Stamper {
-    private final Path document;
-
-    Stamper(Path path) {
-        this.document = requireNonNull(path);
-    }
-
-    private byte[] prefill(boolean usenum, boolean verbose) throws IOException, DocumentException {
+    private byte[] prefill(boolean useNumber, boolean verbose, Path pdfDocument) throws IOException, DocumentException {
         PdfReader pdfReader = null;
         PdfStamper stamper = null;
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
 
         try {
-            pdfReader = new PdfReader(newInputStream(document));
+            pdfReader = new PdfReader(newInputStream(pdfDocument));
             PRAcroForm acroForm = pdfReader.getAcroForm();
             System.out.printf("PDF is in Version %s and has %s pages%n", pdfReader.getPdfVersion(),
                                       pdfReader.getNumberOfPages());
@@ -42,7 +34,7 @@ public class Stamper {
             stamper = new PdfStamper(pdfReader, baos);
             stamper.setFormFlattening(true);
 
-            System.out.println(stampFields(acroForm, stamper, usenum, verbose));
+            System.out.println(stampFields(acroForm, stamper, useNumber, verbose));
         } finally {
             closeStamper(stamper);
             closeReader(pdfReader);
@@ -123,8 +115,8 @@ public class Stamper {
         }
     }
 
-    Path printPreFilledPdf(boolean useNumbers, boolean verbose) throws IOException, DocumentException {
-        byte[] doc = prefill(useNumbers, verbose);
+    public Path pdfDocument(boolean useNumbers, boolean verbose, Path document) throws IOException, DocumentException {
+        byte[] doc = prefill(useNumbers, verbose, document);
         String outputDir = System.getenv("OUTPUT_DIR");
         if (outputDir == null) {
             outputDir = System.getProperty("java.io.tmpdir");

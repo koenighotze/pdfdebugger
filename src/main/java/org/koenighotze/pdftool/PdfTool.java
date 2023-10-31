@@ -8,6 +8,7 @@ import java.nio.file.*;
 
 import com.lowagie.text.*;
 import org.apache.commons.cli.*;
+import org.koenighotze.pdftool.stamper.Stamper;
 
 /**
  * Simple tool for pre-stamping a PDF form with the keys of the fields as their
@@ -31,44 +32,42 @@ public class PdfTool {
                         .build());
     }
 
-
     public static void main(String[] args) throws IOException, DocumentException {
         var pdfTool = new PdfTool();
         Options options = pdfTool.buildCliOptions();
 
         try {
-            var parseConfiguration = pdfTool.parseCliArguments(args, options);
+            var parseConfiguration = ParseConfiguration.fromCliArguments(args, options);
 
-            if (exists(parseConfiguration.filename)) {
-                var result = stampPdfTemplate(parseConfiguration);
-                System.out.printf("Result is here: %s%n", result.toAbsolutePath());
-            }
-            else {
-                System.err.println("File " + parseConfiguration.filename.toAbsolutePath() + " does not exist!");
-            }
-
+            pdfTool.stampPdfFormToFile(parseConfiguration);
         } catch (ParseException e) {
-            printUsage(options);
+            pdfTool.printUsage(options);
         }
     }
 
-    private ParseConfiguration parseCliArguments(String[] args, Options options) throws ParseException {
-        var parsedOptions = new DefaultParser().parse(options, args);
-        return extractOptions(parsedOptions);
+    private void stampPdfFormToFile(ParseConfiguration parseConfiguration) throws IOException, DocumentException {
+        if (exists(parseConfiguration.filename)) {
+            var result = new Stamper().printPreFilledPdf(parseConfiguration.numbers, parseConfiguration.verbose, parseConfiguration.filename);
+            System.out.printf("Result is here: %s%n", result.toAbsolutePath());
+        }
+        else {
+            System.err.println("File " + parseConfiguration.filename.toAbsolutePath() + " does not exist!");
+        }
     }
 
-    private static Path stampPdfTemplate(ParseConfiguration parseConfiguration) throws DocumentException, IOException {
-        return new Stamper(parseConfiguration.filename).printPreFilledPdf(parseConfiguration.numbers, parseConfiguration.verbose);
-    }
-
-    private static void printUsage(Options options) {
+    private void printUsage(Options options) {
         new HelpFormatter().printHelp("PdfTool", options);
     }
 
-    public record ParseConfiguration(Path filename, Boolean numbers, Boolean verbose) { }
-
-    private static ParseConfiguration extractOptions(CommandLine cmd) {
-        return new ParseConfiguration(Paths.get(cmd.getOptionValue("file")), cmd.hasOption("numbers"), cmd.hasOption("verbose"));
+    public record ParseConfiguration(Path filename, Boolean numbers, Boolean verbose) {
+        static ParseConfiguration fromCliArguments(String[] args, Options options) throws ParseException {
+            var parsedOptions = new DefaultParser().parse(options, args);
+            return new ParseConfiguration(
+                    Paths.get(parsedOptions.getOptionValue("file")),
+                    parsedOptions.hasOption("numbers"),
+                    parsedOptions.hasOption("verbose"));
+        }
     }
+
 
 }
