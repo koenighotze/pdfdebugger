@@ -1,17 +1,24 @@
 package org.koenighotze.pdftool.stamper;
 
+import com.lowagie.text.DocumentException;
+import org.apache.pdfbox.pdmodel.PDDocument;
+import org.apache.pdfbox.text.PDFTextStripper;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+
+import java.io.BufferedOutputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.io.PrintStream;
+import java.net.URISyntaxException;
+import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+
 import static java.util.Objects.requireNonNull;
 import static org.assertj.core.api.Assertions.assertThat;
-
-import java.io.*;
-import java.net.*;
-import java.nio.file.*;
-import java.util.Objects;
-
-import com.lowagie.text.*;
-import org.apache.pdfbox.pdmodel.*;
-import org.apache.pdfbox.text.*;
-import org.junit.jupiter.api.*;
 
 /**
  * @author dschmitz
@@ -25,7 +32,7 @@ public class StamperTest {
     @BeforeEach
     public void setUp() throws URISyntaxException {
         path = Paths.get(requireNonNull(StamperTest.class.getResource("/interactiveform_enabled.pdf"))
-                                          .toURI());
+                .toURI());
 
         originalOut = System.out;
         stdOutBos = new ByteArrayOutputStream();
@@ -70,7 +77,7 @@ public class StamperTest {
     public void the_field_information_is_printed_to_stdout() throws IOException, DocumentException {
         new Stamper().printPreFilledPdf(true, false, this.path);
 
-        assertThat(stdOutBos.toString("UTF-8")).contains("Stamping key " + KNOWN_FIELD_NAME);
+        assertThat(stdOutBos.toString(StandardCharsets.UTF_8)).contains("Stamping key " + KNOWN_FIELD_NAME);
     }
 
 }

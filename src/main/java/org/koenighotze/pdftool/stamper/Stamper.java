@@ -12,7 +12,6 @@ import java.util.Set;
 import static com.lowagie.text.pdf.AcroFields.*;
 import static java.nio.file.Files.*;
 import static java.nio.file.StandardOpenOption.WRITE;
-import static java.util.Objects.requireNonNull;
 
 /**
  * Stamper for acrofields in pdf forms.
@@ -29,7 +28,7 @@ public class Stamper {
             pdfReader = new PdfReader(newInputStream(pdfDocument));
             PRAcroForm acroForm = pdfReader.getAcroForm();
             System.out.printf("PDF is in Version %s and has %s pages%n", pdfReader.getPdfVersion(),
-                                      pdfReader.getNumberOfPages());
+                    pdfReader.getNumberOfPages());
 
             stamper = new PdfStamper(pdfReader, baos);
             stamper.setFormFlattening(true);
@@ -47,9 +46,9 @@ public class Stamper {
     private void dumpDebugData(PRAcroForm acroForm, String field) {
         FieldInformation info = acroForm.getField(field);
         ((Set<PdfName>) info.getInfo()
-                            .getKeys()).forEach(key -> {
+                .getKeys()).forEach(key -> {
             System.out.println("\t-> " + key + " <-> " + info.getInfo()
-                                                             .get(key));
+                    .get(key));
         });
     }
 

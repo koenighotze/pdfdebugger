@@ -1,17 +1,20 @@
 package org.koenighotze.pdftool;
 
+import com.lowagie.text.DocumentException;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+
+import java.io.BufferedOutputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.io.PrintStream;
+
 import static java.lang.System.setErr;
 import static java.lang.System.setOut;
-import static java.nio.charset.StandardCharsets.*;
+import static java.nio.charset.StandardCharsets.UTF_8;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.koenighotze.pdftool.PdfTool.main;
-
-import java.io.*;
-import java.nio.charset.StandardCharsets;
-
-import com.lowagie.text.*;
-import org.junit.jupiter.api.*;
-import org.junit.jupiter.api.Test;
 
 /**
  * @author dschmitz

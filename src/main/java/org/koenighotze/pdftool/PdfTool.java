@@ -1,14 +1,18 @@
 package org.koenighotze.pdftool;
 
+import com.lowagie.text.DocumentException;
+import org.apache.commons.cli.DefaultParser;
+import org.apache.commons.cli.HelpFormatter;
+import org.apache.commons.cli.Options;
+import org.apache.commons.cli.ParseException;
+import org.koenighotze.pdftool.stamper.Stamper;
+
+import java.io.IOException;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+
 import static java.nio.file.Files.exists;
 import static org.apache.commons.cli.Option.builder;
-
-import java.io.*;
-import java.nio.file.*;
-
-import com.lowagie.text.*;
-import org.apache.commons.cli.*;
-import org.koenighotze.pdftool.stamper.Stamper;
 
 /**
  * Simple tool for pre-stamping a PDF form with the keys of the fields as their
@@ -49,8 +53,7 @@ public class PdfTool {
         if (exists(parseConfiguration.filename)) {
             var result = new Stamper().printPreFilledPdf(parseConfiguration.numbers, parseConfiguration.verbose, parseConfiguration.filename);
             System.out.printf("Result is here: %s%n", result.toAbsolutePath());
-        }
-        else {
+        } else {
             System.err.println("File " + parseConfiguration.filename.toAbsolutePath() + " does not exist!");
         }
     }
