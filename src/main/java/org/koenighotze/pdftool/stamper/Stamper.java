@@ -115,7 +115,7 @@ public class Stamper {
         }
     }
 
-    public Path pdfDocument(boolean useNumbers, boolean verbose, Path document) throws IOException, DocumentException {
+    public Path printPreFilledPdf(boolean useNumbers, boolean verbose, Path document) throws IOException, DocumentException {
         byte[] doc = prefill(useNumbers, verbose, document);
         String outputDir = System.getenv("OUTPUT_DIR");
         if (outputDir == null) {
