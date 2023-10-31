@@ -45,6 +45,10 @@
     <main.class>org.koenighotze.pdftool.PdfTool</main.class>
 
     <docker.tag>${project.version}</docker.tag>
+    <properties>
+       <sonar.organization>koenighotze</sonar.organization>
+       <sonar.host.url>https://sonarcloud.io</sonar.host.url>
+    </properties>
 
     <!-- libs -->
     <itext.version>2.1.7</itext.version>
