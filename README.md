@@ -5,7 +5,11 @@ Simple tool for pre-stamping a pdf form.
 [![CI](https://github.com/koenighotze/pdfdebugger/actions/workflows/ci.yml/badge.svg)](https://github.com/koenighotze/pdfdebugger/actions/workflows/ci.yml)
 [![Docker build](https://github.com/koenighotze/pdfdebugger/actions/workflows/docker.yml/badge.svg)](https://github.com/koenighotze/pdfdebugger/actions/workflows/docker.yml)
 [![Codacy Badge](https://app.codacy.com/project/badge/Grade/2082d38336fa495c8a91851ebb297793)](https://www.codacy.com/gh/koenighotze/pdfdebugger/dashboard?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=koenighotze/pdfdebugger&amp;utm_campaign=Badge_Grade)
-[![Codacy Badge](https://app.codacy.com/project/badge/Grade/2082d38336fa495c8a91851ebb297793)](https://www.codacy.com/gh/koenighotze/pdfdebugger/dashboard?utm_source=github.com&utm_medium=referral&utm_content=koenighotze/pdfdebugger&utm_campaign=Badge_Coverage)
+[![Coverage](https://app.codacy.com/project/badge/Grade/2082d38336fa495c8a91851ebb297793)](https://www.codacy.com/gh/koenighotze/pdfdebugger/dashboard?utm_source=github.com&utm_medium=referral&utm_content=koenighotze/pdfdebugger&utm_campaign=Badge_Coverage)
+[![Quality Gate Status](https://sonarcloud.io/api/project_badges/measure?project=koenighotze_pdfdebugger&metric=alert_status)](https://sonarcloud.io/summary/new_code?id=koenighotze_pdfdebugger)
+[![Vulnerabilities](https://sonarcloud.io/api/project_badges/measure?project=koenighotze_pdfdebugger&metric=vulnerabilities)](https://sonarcloud.io/summary/new_code?id=koenighotze_pdfdebugger)
+[![Security Rating](https://sonarcloud.io/api/project_badges/measure?project=koenighotze_pdfdebugger&metric=security_rating)](https://sonarcloud.io/summary/new_code?id=koenighotze_pdfdebugger)
+[![Bugs](https://sonarcloud.io/api/project_badges/measure?project=koenighotze_pdfdebugger&metric=bugs)](https://sonarcloud.io/summary/new_code?id=koenighotze_pdfdebugger)
 
 
 ## Usage
