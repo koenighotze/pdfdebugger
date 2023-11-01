@@ -35,7 +35,7 @@ See below for building and running a local version.
 Build it like this:
 
 ```bash
-$ mvn package
+$ ./mvnw package
 ```
 
 Usage:
@@ -61,11 +61,13 @@ The result file contains the stamped version.
 ## TODO
 
 - [ ] Move to Java 21
-- [ ] Container scan and upload
+- [x] Container scan
+- [ ] Container upload
 - [ ] Profiling
 - [ ] Integration test
-- [ ] Upload Javadoc and Release
+- [ ] Upload Javadoc
+- [ ] Release
 - [x] Setup commit sign force
-- [ ] More linting
+- [x] More linting
 - [ ] Drop iText
-- [ ] Drop vavr
+- [x] Drop vavr

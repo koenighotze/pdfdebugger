@@ -15,7 +15,6 @@ if [[ "${TRACE-0}" == "1" ]]; then set -o xtrace; fi
 : "${CONTAINER_REGISTRY?'Expected env var CONTAINER_REGISTRY not set'}"
 : "${DOCKER_USERNAME?'Expected env var DOCKER_USERNAME not set'}"
 : "${DOCKER_PASSWORD?'Expected env var DOCKER_PASSWORD not set'}"
-: "${CONTAINER_PORTS:=8080}"
 : "${OUTPUT_MODE:=}"
 
 IMAGE_NAME="$CONTAINER_REGISTRY/$GITHUB_REPOSITORY:$GITHUB_SHA"

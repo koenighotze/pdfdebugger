@@ -82,3 +82,16 @@ jobs:
           ignore-unfixed: true
           vuln-type: "os,library"
           severity: "CRITICAL,HIGH"
+
+      - name: Push image to registry
+#        if: "is tag" TODO
+        run: ./scripts/push-image.sh
+        env:
+          CONTAINER_REGISTRY: docker.io
+          DOCKER_USERNAME: ${{ secrets.DOCKER_USERNAME }}
+          DOCKER_PASSWORD: ${{ secrets.DOCKER_PASSWORD }}
+          IMAGE_NAME: "docker.io/${GITHUB_REPOSITORY}:${GITHUB_SHA}"
+          IMAGE_TAR: "${image-tar}"
+
+          
+
