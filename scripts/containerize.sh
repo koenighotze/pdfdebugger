@@ -44,7 +44,7 @@ echo "$DOCKER_BUILD_OPTIONS"
   package \
   "jib:build${OUTPUT_MODE}" \
   -Dorg.opencontainers.image.revision="${GITHUB_SHA}" \
-  -Ddocker.tag="${GITHUB_REF#refs/tags/}" \
+  -Ddocker.tag="${GIT_TAG}" \
   -Djib.to.auth.username="${DOCKER_USERNAME}" \
   -Djib.to.auth.password="${DOCKER_PASSWORD}"
 
