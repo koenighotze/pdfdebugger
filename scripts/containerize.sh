@@ -37,14 +37,12 @@ if [[ -n "${GIT_TAG:=}" ]]; then
 fi
 echo "$DOCKER_BUILD_OPTIONS"
 
-#<org.opencontainers.image.revision>123</org.opencontainers.image.revision>
-
 ./mvnw \
   --no-transfer-progress \
   package \
   "jib:build${OUTPUT_MODE}" \
   -Dorg.opencontainers.image.revision="${GITHUB_SHA}" \
-  -Ddocker.tag="${GIT_TAG}" \
+  -Ddocker.tag="${GIT_TAG:=latest}" \
   -Djib.to.auth.username="${DOCKER_USERNAME}" \
   -Djib.to.auth.password="${DOCKER_PASSWORD}"
 
