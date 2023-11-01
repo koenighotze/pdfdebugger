@@ -22,6 +22,9 @@ jobs:
         env:
           CONTAINER_REGISTRY: docker.io
           OUTPUT_MODE: tar
+          DOCKER_USERNAME: ${{ secrets.DOCKER_USERNAME }}
+          DOCKER_PASSWORD: ${{ secrets.DOCKER_PASSWORD }}
+
 
       - name: Run vulnerability scanner
         uses: aquasecurity/trivy-action@0.12.0
