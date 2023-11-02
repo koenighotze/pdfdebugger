@@ -7,6 +7,10 @@ on:
     branches: [master]
   workflow_dispatch:
 
+env:
+  CONTAINER_REGISTRY: docker.io
+  IMAGE_NAME: "docker.io/${GITHUB_REPOSITORY}:${GITHUB_SHA}"
+
 jobs:
   security-scan:
     runs-on: ubuntu-20.04
@@ -65,11 +69,12 @@ jobs:
           distribution: temurin
           cache: maven
 
-      - name: Build image
-        run: ./scripts/containerize.sh
+      - name: Build image tar
+#        run: ./scripts/containerize.sh
+        run: ./scripts/build-image-tar.sh
         env:
-          CONTAINER_REGISTRY: docker.io
-          OUTPUT_MODE: Tar
+#          CONTAINER_REGISTRY: docker.io
+#          OUTPUT_MODE: Tar
           DOCKER_USERNAME: ${{ secrets.DOCKER_USERNAME }}
           DOCKER_PASSWORD: ${{ secrets.DOCKER_PASSWORD }}
 
@@ -87,11 +92,9 @@ jobs:
 #        if: "is tag" TODO
         run: ./scripts/push-image.sh
         env:
-          CONTAINER_REGISTRY: docker.io
           DOCKER_USERNAME: ${{ secrets.DOCKER_USERNAME }}
           DOCKER_PASSWORD: ${{ secrets.DOCKER_PASSWORD }}
-          IMAGE_NAME: "docker.io/${GITHUB_REPOSITORY}:${GITHUB_SHA}"
-          IMAGE_TAR: "${image-tar}"
+          IMAGE_TAR: "${{ env.image-tar }}"
 
           
 

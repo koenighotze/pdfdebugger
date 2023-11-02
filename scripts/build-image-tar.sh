@@ -15,7 +15,7 @@ if [[ "${TRACE-0}" == "1" ]]; then set -o xtrace; fi
 ./mvnw \
   --no-transfer-progress \
   package \
-  "jib:buildTar" \
+  jib:buildTar \
   -Dorg.opencontainers.image.revision="${GITHUB_SHA}" \
   -Ddocker.tag="${GITHUB_SHA}" \
   -Djib.to.auth.username="${DOCKER_USERNAME}" \

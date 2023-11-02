@@ -18,11 +18,13 @@ if [[ "$GITHUB_REF" = refs/tags/* ]]; then
     GIT_TAG=${GITHUB_REF/refs\/tags\/}
     echo "Building for tag $GIT_TAG"
 else
-    echo "Will only push tagged images"
-    exit 1
+    echo "Will only push tagged images...temp allow for now"
+    GIT_TAG=fortuna123
+#    exit 1
 fi
 
 # shellcheck disable=SC2086
 docker load --input "$IMAGE_TAR"
 docker tag "$IMAGE_NAME" "$CONTAINER_REGISTRY/$GITHUB_REPOSITORY:$GIT_TAG"
+docker images
 echo docker push "$CONTAINER_REGISTRY/$GITHUB_REPOSITORY:$GIT_TAG"
