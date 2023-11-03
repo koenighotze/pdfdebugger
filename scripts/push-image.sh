@@ -14,6 +14,7 @@ if [[ "${TRACE-0}" == "1" ]]; then set -o xtrace; fi
 : "${IMAGE_NAME?'Expected env var IMAGE_NAME not set'}"
 : "${IMAGE_TAR?'Expected env var IMAGE_TAR not set'}"
 
+
 if [[ "$GITHUB_REF" = refs/tags/* ]]; then
     GIT_TAG=${GITHUB_REF/refs\/tags\/}
     echo "Building for tag $GIT_TAG"
@@ -22,6 +23,8 @@ else
     GIT_TAG=fortuna123
 #    exit 1
 fi
+
+echo "Pushing image $IMAGE_NAME contained in $IMAGE_TAR to $CONTAINER_REGISTRY/$GITHUB_REPOSITORY:$GIT_TAG"
 
 # shellcheck disable=SC2086
 docker load --input "$IMAGE_TAR"

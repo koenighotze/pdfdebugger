@@ -81,7 +81,7 @@ jobs:
       - name: Run vulnerability scanner
         uses: aquasecurity/trivy-action@0.12.0
         with:
-          input: target/jib-image.tar
+          input: "${{ env.image-tar }}"
           format: "table"
           exit-code: "1"
           ignore-unfixed: true
