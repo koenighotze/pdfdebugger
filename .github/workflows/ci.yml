@@ -73,8 +73,6 @@ jobs:
 #        run: ./scripts/containerize.sh
         run: ./scripts/build-image-tar.sh
         env:
-#          CONTAINER_REGISTRY: docker.io
-#          OUTPUT_MODE: Tar
           DOCKER_USERNAME: ${{ secrets.DOCKER_USERNAME }}
           DOCKER_PASSWORD: ${{ secrets.DOCKER_PASSWORD }}
 
@@ -95,7 +93,9 @@ jobs:
           DOCKER_USERNAME: ${{ secrets.DOCKER_USERNAME }}
           DOCKER_PASSWORD: ${{ secrets.DOCKER_PASSWORD }}
           IMAGE_TAR: "${{ env.image-tar }}"
-          IMAGE_NAME: "docker.io/koenighotze/pdfdebugger"
+#          IMAGE_NAME: "docker.io/koenighotze/pdfdebugger"
+          IMAGE_NAME: "${{ env.CONTAINER_REGISTRY}}/${{ github.repository }}"
+
 
           
 
