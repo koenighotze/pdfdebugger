@@ -24,7 +24,7 @@ else
 #    exit 1
 fi
 
-echo "Pushing image $IMAGE_NAME contained in $IMAGE_TAR to $CONTAINER_REGISTRY/$GITHUB_REPOSITORY:$GIT_TAG"
+echo "Pushing image ${IMAGE_NAME} contained in ${IMAGE_TAR} to ${CONTAINER_REGISTRY}/${GITHUB_REPOSITORY}:${GIT_TAG}"
 
 # shellcheck disable=SC2086
 docker load --input "$IMAGE_TAR"

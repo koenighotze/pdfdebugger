@@ -9,7 +9,7 @@ on:
 
 env:
   CONTAINER_REGISTRY: docker.io
-  IMAGE_NAME: "docker.io/${GITHUB_REPOSITORY}:${GITHUB_SHA}"
+#  IMAGE_NAME: "docker.io/${GITHUB_REPOSITORY}:${GITHUB_SHA}"
 
 jobs:
   security-scan:
@@ -95,7 +95,7 @@ jobs:
           DOCKER_USERNAME: ${{ secrets.DOCKER_USERNAME }}
           DOCKER_PASSWORD: ${{ secrets.DOCKER_PASSWORD }}
           IMAGE_TAR: "${{ env.image-tar }}"
-          IMAGE_NAME: "docker.io/${{ env.GITHUB_REPOSITORY}}:${{ env.GITHUB_SHA }}"
+#          IMAGE_NAME: "docker.io/${{ env.GITHUB_REPOSITORY}}:${{ env.GITHUB_SHA }}"
 
           
 
