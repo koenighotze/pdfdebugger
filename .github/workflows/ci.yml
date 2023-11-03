@@ -9,7 +9,7 @@ on:
 
 env:
   CONTAINER_REGISTRY: docker.io
-  IMAGE_NAME: "docker.io/${{ env.GITHUB_REPOSITORY }}:${{ env.GITHUB_SHA }}"
+  IMAGE_NAME: "docker.io/${{ GITHUB_REPOSITORY }}:${{ GITHUB_SHA }}"
 
 jobs:
   security-scan:
