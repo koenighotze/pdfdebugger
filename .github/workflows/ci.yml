@@ -52,6 +52,7 @@ jobs:
         run: ./mvnw --no-transfer-progress verify
 
       - name: Upload coverage report
+        if: github.event_name != 'pull_request'
         uses: codacy/codacy-coverage-reporter-action@v1
         with:
           project-token: ${{ secrets.CODACY_PROJECT_TOKEN }}
@@ -87,7 +88,7 @@ jobs:
           severity: "CRITICAL,HIGH"
 
       - name: Push image to registry
-#        if: "is tag" TODO
+        if: github.event_name != 'pull_request'
         run: ./scripts/push-image.sh
         env:
           DOCKER_USERNAME: ${{ secrets.DOCKER_USERNAME }}
