@@ -52,7 +52,7 @@
     <itext.version>2.1.7</itext.version>
     <junit.version>5.10.1</junit.version>
     <junit.platform.version>1.10.0</junit.platform.version>
-    <assertj.version>3.25.1</assertj.version>
+    <assertj.version>3.25.3</assertj.version>
     <pdfbox.version>2.0.30</pdfbox.version>
     <commons-cli.version>1.6.0</commons-cli.version>
     <bcprov-jdk14.version>1.77</bcprov-jdk14.version>
