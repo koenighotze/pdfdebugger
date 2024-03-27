@@ -50,7 +50,7 @@
 
     <!-- libs -->
     <itext.version>2.1.7</itext.version>
-    <junit.version>5.10.1</junit.version>
+    <junit.version>5.10.2</junit.version>
     <junit.platform.version>1.10.0</junit.platform.version>
     <assertj.version>3.25.3</assertj.version>
     <pdfbox.version>2.0.31</pdfbox.version>
