@@ -55,7 +55,7 @@
     <assertj.version>3.25.3</assertj.version>
     <pdfbox.version>2.0.31</pdfbox.version>
     <commons-cli.version>1.6.0</commons-cli.version>
-    <bcprov-jdk14.version>1.77</bcprov-jdk14.version>
+    <bcprov-jdk14.version>1.78</bcprov-jdk14.version>
     <bctsp-jdk14.version>1.46</bctsp-jdk14.version>
 
 
