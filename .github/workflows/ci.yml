@@ -9,7 +9,6 @@ on:
 
 env:
   CONTAINER_REGISTRY: docker.io
-#  IMAGE_NAME: "docker.io/${GITHUB_REPOSITORY}:${GITHUB_SHA}"
 
 jobs:
   security-scan:
@@ -71,7 +70,6 @@ jobs:
           cache: maven
 
       - name: Build image tar
-#        run: ./scripts/containerize.sh
         run: ./scripts/build-image-tar.sh
         env:
           DOCKER_USERNAME: ${{ secrets.DOCKER_USERNAME }}
@@ -94,7 +92,6 @@ jobs:
           DOCKER_USERNAME: ${{ secrets.DOCKER_USERNAME }}
           DOCKER_PASSWORD: ${{ secrets.DOCKER_PASSWORD }}
           IMAGE_TAR: "${{ env.image-tar }}"
-#          IMAGE_NAME: "docker.io/koenighotze/pdfdebugger"
           IMAGE_NAME: "${{ env.CONTAINER_REGISTRY}}/${{ github.repository }}"
 
 
