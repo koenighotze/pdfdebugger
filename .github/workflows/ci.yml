@@ -2,9 +2,9 @@ name: CI
 
 on:
   push:
-    branches: [master]
+    branches: [main]
   pull_request:
-    branches: [master]
+    branches: [main]
   workflow_dispatch:
 
 env:
@@ -31,7 +31,7 @@ jobs:
         uses: github/codeql-action/upload-sarif@v3
         if: always()
         with:
-          sarif_file: 'trivy-results.sarif'
+          sarif_file: "trivy-results.sarif"
 
   QA:
     runs-on: ubuntu-20.04
@@ -93,7 +93,3 @@ jobs:
           DOCKER_PASSWORD: ${{ secrets.DOCKER_PASSWORD }}
           IMAGE_TAR: "${{ env.image-tar }}"
           IMAGE_NAME: "${{ env.CONTAINER_REGISTRY}}/${{ github.repository }}"
-
-
-          
-
