@@ -1,121 +1,150 @@
 package org.koenighotze.pdftool.stamper;
 
-import com.lowagie.text.DocumentException;
-import com.lowagie.text.pdf.*;
-import com.lowagie.text.pdf.PRAcroForm.FieldInformation;
+import org.apache.pdfbox.Loader;
+import org.apache.pdfbox.pdmodel.PDDocument;
+import org.apache.pdfbox.pdmodel.interactive.form.*;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.nio.file.Path;
-import java.util.Set;
+import java.util.List;
 
-import static com.lowagie.text.pdf.AcroFields.*;
-import static java.nio.file.Files.*;
+import static java.nio.file.Files.createTempFile;
+import static java.nio.file.Files.write;
 import static java.nio.file.StandardOpenOption.WRITE;
+import static org.koenighotze.pdftool.stamper.StampDebugger.dumpDebugData;
 
-/**
- * Stamper for acrofields in pdf forms.
- *
- * @author dschmitz
- */
 public class Stamper {
-    private byte[] prefill(boolean useNumber, boolean verbose, Path pdfDocument) throws IOException, DocumentException {
-        PdfReader pdfReader = null;
-        PdfStamper stamper = null;
+    private byte[] prefill(boolean useNumber, boolean verbose, Path pdfDocument) throws IOException {
+        PDDocument document = null;
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
 
         try {
-            pdfReader = new PdfReader(newInputStream(pdfDocument));
-            PRAcroForm acroForm = pdfReader.getAcroForm();
-            System.out.printf("PDF is in Version %s and has %s pages%n", pdfReader.getPdfVersion(),
-                    pdfReader.getNumberOfPages());
+            document = Loader.loadPDF(pdfDocument.toFile());
+            PDAcroForm acroForm = document.getDocumentCatalog().getAcroForm();
+            if (verbose) {
+                System.out.printf("PDF has %s pages%n", document.getNumberOfPages());
+            }
 
-            stamper = new PdfStamper(pdfReader, baos);
-            stamper.setFormFlattening(true);
+            System.out.println(stampFields(document, useNumber, verbose));
 
-            System.out.println(stampFields(acroForm, stamper, useNumber, verbose));
+            if (acroForm != null) {
+                acroForm.flatten();
+            }
+
+            document.save(baos);
         } finally {
-            closeStamper(stamper);
-            closeReader(pdfReader);
+            if (document != null) {
+                document.close();
+            }
         }
-        baos.flush();
+
         return baos.toByteArray();
     }
 
-    @SuppressWarnings("unchecked")
-    private void dumpDebugData(PRAcroForm acroForm, String field) {
-        FieldInformation info = acroForm.getField(field);
-        ((Set<PdfName>) info.getInfo()
-                .getKeys()).forEach(key -> {
-            System.out.println("\t-> " + key + " <-> " + info.getInfo()
-                    .get(key));
-        });
+    private int stampFields(PDDocument document, boolean useNumbers, boolean verbose) {
+        PDAcroForm acroForm = document.getDocumentCatalog().getAcroForm();
+        List<PDField> fields = acroForm.getFields();
+
+        return fields.stream().reduce(0, (pos, field) -> stampField(acroForm, useNumbers, verbose, pos, field), Integer::sum);
     }
 
-    @SuppressWarnings("unchecked")
-    private int stampFields(PRAcroForm acroForm, PdfStamper stamper, boolean useNumbers, boolean verbose) {
-        AcroFields fields = stamper.getAcroFields();
+    private int stampField(PDAcroForm acroForm, boolean useNumbers, boolean verbose, int fieldNumber, PDField field) {
+        String fieldIdentifier = valueForType(getType(acroForm, field.getFullyQualifiedName()), useNumbers, fieldNumber, field.getFullyQualifiedName());
 
-        var fieldKeys = (Set<String>) fields.getFields().keySet();
-        return fieldKeys.stream().reduce(0, (pos, key) -> stampField(acroForm, useNumbers, verbose, pos, fields, key), Integer::sum);
-    }
-
-    private int stampField(PRAcroForm acroForm, boolean useNumbers, boolean verbose, int fieldNumber, AcroFields fields, String key) {
-        String fieldIdentifier = useNumbers ? fieldNumber + "" : key;
-
-        logStamp(useNumbers, fields, key, fieldIdentifier);
+        logStamp(useNumbers, field, fieldIdentifier) ;
 
         if (verbose) {
-            dumpDebugData(acroForm, key);
+            dumpDebugData(acroForm, field.getFullyQualifiedName());
         }
 
         try {
-            fields.setField(key, fieldIdentifier);
-        } catch (IOException | DocumentException e) {
-            System.err.printf("Cannot stamp field %s (%s)%n", key, e.getMessage());
+            if (null != fieldIdentifier) {
+                field.setValue(fieldIdentifier);
+            } else {
+                System.err.printf("Field %s not found%n", fieldIdentifier);
+            }
+        } catch (IOException e) {
+            System.err.printf("Cannot stamp field %s (%s)%n", fieldIdentifier, e.getMessage());
         }
 
         return fieldNumber + 1;
     }
 
-    private void logStamp(boolean useNumbers, AcroFields fields, String key, String val) {
-        System.out.printf("Stamping key %s (%s) %s%n", key, getType(fields, key), useNumbers ? " as " + val : "");
+    private void logStamp(boolean useNumbers, PDField field, String val) {
+        System.out.printf("Stamping key %s (%s) %s%n", field.getFullyQualifiedName(), field.getFieldType(), useNumbers ? " as " + val : "");
     }
 
-    private String getType(AcroFields fields, String key) {
-        return switch (fields.getFieldType(key)) {
-            case FIELD_TYPE_NONE -> "none";
-            case FIELD_TYPE_PUSHBUTTON -> "pushbutton";
-            case FIELD_TYPE_CHECKBOX -> "checkbox";
-            case FIELD_TYPE_RADIOBUTTON -> "radio";
-            case FIELD_TYPE_TEXT, FIELD_TYPE_LIST -> "list";
-            case FIELD_TYPE_COMBO -> "combo";
-            case FIELD_TYPE_SIGNATURE -> "signature";
-
+    private String valueForType(String type, boolean useNumbers, int fieldNumber, String key) {
+        return switch (type) {
+            case "text" -> {
+                if (useNumbers) {
+                    yield String.valueOf(fieldNumber);
+                }
+                yield key;
+            }
+            case "combo" -> "combo";
+            case "list" ->
+                // TODO get real value
+                    null;
+            case "checkbox" ->
+                // TODO get real value
+                    null;
+            case "radiobutton" ->
+                // TODO get real value
+                    null;
+            case "pushbutton" ->
+                // TODO get real value
+                    null;
+            case "signature" ->
+                // TODO get real value
+                    null;
             default -> "unknown";
         };
     }
 
-    private void closeReader(PdfReader pdfReader) {
-        if (pdfReader != null) {
-            pdfReader.close();
+
+    private String getType(PDAcroForm acroForm, String key) {
+        PDField field = acroForm.getField(key);
+        if (field instanceof PDTextField) {
+            return "text";
         }
+        if (field instanceof PDComboBox) {
+            return "combo";
+        }
+        if (field instanceof PDListBox) {
+            return "list";
+        }
+        if (field instanceof PDCheckBox) {
+            return "checkbox";
+        }
+        if (field instanceof PDRadioButton) {
+            return "radiobutton";
+        }
+        if (field instanceof PDButton) {
+            // PDButton is a superclass of PDCheckBox and PDRadioButton, so this check comes last.
+            return "pushbutton";
+        }
+        if (field instanceof PDSignatureField) {
+            return "signature";
+        }
+        return "unknown";
     }
 
-    private void closeStamper(PdfStamper stamper) {
-        if (stamper == null) {
+    private void closeDocument(PDDocument document) {
+        if (document == null) {
             return;
         }
 
         try {
-            stamper.close();
-        } catch (IOException | DocumentException e) {
-            System.err.printf("Cannot release stamper (%s)%n", e.getMessage());
+            document.close();
+        } catch (IOException e) {
+            System.err.printf("Cannot release document (%s)%n", e.getMessage());
         }
     }
 
-    public Path printPreFilledPdf(boolean useNumbers, boolean verbose, Path document) throws IOException, DocumentException {
-        byte[] doc = prefill(useNumbers, verbose, document);
+    public Path printPreFilledPdf(boolean useNumbers, boolean verbose, Path documentPath) throws IOException {
+        byte[] doc = prefill(useNumbers, verbose, documentPath);
         String outputDir = System.getenv("OUTPUT_DIR");
         if (outputDir == null) {
             outputDir = System.getProperty("java.io.tmpdir");
@@ -125,6 +154,7 @@ public class Stamper {
         write(out, doc, WRITE);
 
         return out.toAbsolutePath();
+
     }
 
 }
