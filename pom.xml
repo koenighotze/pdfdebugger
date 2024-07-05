@@ -53,7 +53,7 @@
     <junit.version>5.10.3</junit.version>
     <junit.platform.version>1.10.0</junit.platform.version>
     <assertj.version>3.26.0</assertj.version>
-    <pdfbox.version>2.0.31</pdfbox.version>
+    <pdfbox.version>3.0.2</pdfbox.version>
     <commons-cli.version>1.8.0</commons-cli.version>
     <bcprov-jdk14.version>1.78.1</bcprov-jdk14.version>
     <bctsp-jdk14.version>1.46</bctsp-jdk14.version>
@@ -66,26 +66,6 @@
   </properties>
 
   <dependencies>
-    <!-- log4j2 -->
-    <dependency>
-      <groupId>com.lowagie</groupId>
-      <artifactId>itext</artifactId>
-      <version>${itext.version}</version>
-      <exclusions>
-        <exclusion>
-          <groupId>bouncycastle</groupId>
-          <artifactId>bctsp-jdk14</artifactId>
-        </exclusion>
-        <exclusion>
-          <groupId>bouncycastle</groupId>
-          <artifactId>bcprov-jdk14</artifactId>
-        </exclusion>
-        <exclusion>
-          <groupId>bouncycastle</groupId>
-          <artifactId>bcmail-jdk14</artifactId>
-        </exclusion>
-      </exclusions>
-    </dependency>
     <dependency>
       <groupId>org.bouncycastle</groupId>
       <artifactId>bctsp-jdk14</artifactId>
@@ -119,6 +99,13 @@
       <artifactId>commons-cli</artifactId>
       <version>${commons-cli.version}</version>
     </dependency>
+
+    <dependency>
+      <groupId>org.apache.pdfbox</groupId>
+      <artifactId>pdfbox</artifactId>
+      <version>${pdfbox.version}</version>
+    </dependency>
+
   </dependencies>
 
   <build>

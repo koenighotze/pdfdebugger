@@ -1,6 +1,5 @@
 package org.koenighotze.pdftool;
 
-import com.lowagie.text.DocumentException;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -27,7 +26,7 @@ public class PdfToolTest {
     private ByteArrayOutputStream stdErrBos;
 
     @BeforeEach
-    public void setUp() throws IOException, DocumentException {
+    public void setUp()  {
         originalOut = System.out;
         stdOutBos = new ByteArrayOutputStream();
         setOut(new PrintStream(new BufferedOutputStream(stdOutBos), true));
@@ -49,21 +48,21 @@ public class PdfToolTest {
     }
 
     @Test
-    public void calling_the_main_method_without_args_prints_the_usage() throws IOException, DocumentException {
+    public void calling_the_main_method_without_args_prints_the_usage() throws IOException {
         main(new String[]{});
 
         assertThat(stdOutBos.toString(UTF_8)).contains("usage");
     }
 
     @Test
-    public void calling_the_main_method_with_more_than_2_args_prints_the_usage() throws IOException, DocumentException {
+    public void calling_the_main_method_with_more_than_2_args_prints_the_usage() throws IOException {
         main(new String[]{"bla", "blub", "tuk"});
 
         assertThat(stdOutBos.toString(UTF_8)).contains("usage");
     }
 
     @Test
-    public void if_the_pdf_does_not_exist_no_exception_is_thrown() throws IOException, DocumentException {
+    public void if_the_pdf_does_not_exist_no_exception_is_thrown() throws IOException {
         main(new String[]{"--file", "blafasel"});
         System.out.println(stdOutBos.toString(UTF_8));
         assertThat(stdErrBos.toString(UTF_8)).contains("does not exist!");

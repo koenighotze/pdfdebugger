@@ -1,6 +1,5 @@
 package org.koenighotze.pdftool;
 
-import com.lowagie.text.DocumentException;
 import org.apache.commons.cli.DefaultParser;
 import org.apache.commons.cli.HelpFormatter;
 import org.apache.commons.cli.Options;
@@ -36,7 +35,7 @@ public class PdfTool {
                         .build());
     }
 
-    public static void main(String[] args) throws IOException, DocumentException {
+    public static void main(String[] args) throws IOException {
         var pdfTool = new PdfTool();
         Options options = pdfTool.buildCliOptions();
 
@@ -49,7 +48,7 @@ public class PdfTool {
         }
     }
 
-    private void stampPdfFormToFile(ParseConfiguration parseConfiguration) throws IOException, DocumentException {
+    private void stampPdfFormToFile(ParseConfiguration parseConfiguration) throws IOException {
         if (exists(parseConfiguration.filename)) {
             var result = new Stamper().printPreFilledPdf(parseConfiguration.numbers, parseConfiguration.verbose, parseConfiguration.filename);
             System.out.printf("Result is here: %s%n", result.toAbsolutePath());
