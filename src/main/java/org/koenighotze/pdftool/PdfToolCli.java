@@ -13,37 +13,20 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 
 import static java.nio.file.Files.*;
-import static java.nio.file.Files.exists;
 import static java.nio.file.StandardOpenOption.WRITE;
 import static org.apache.commons.cli.Option.builder;
 
 public class PdfToolCli {
-    public record ParseConfiguration(Path filename, Boolean numbers, Boolean verbose) {
+    public record ParseConfiguration(Path filename, Path targetDirectory) {
         static ParseConfiguration fromCliArguments(String[] args, Options options) throws ParseException {
             var parsedOptions = new DefaultParser().parse(options, args);
             return new ParseConfiguration(
                     Paths.get(parsedOptions.getOptionValue("file")),
-                    parsedOptions.hasOption("numbers"),
-                    parsedOptions.hasOption("verbose"));
+                    Paths.get(parsedOptions.getOptionValue("target-dir", System.getProperty("java.io.tmpdir"))));
         }
     }
 
     private static final Logger LOGGER = LogManager.getLogger(PdfTool.class);
-
-    private Options buildCliOptions() {
-        return new Options().addOption(builder().longOpt("verbose")
-                        .desc("verbose output")
-                        .build())
-                .addOption(builder().longOpt("numbers")
-                        .desc("print numbers instead of names")
-                        .build())
-                .addOption(builder().longOpt("file")
-                        .required()
-                        .argName("PdfDoc")
-                        .desc("the pdf document")
-                        .hasArg()
-                        .build());
-    }
 
     public static void main(String[] args) throws IOException {
         var pdfTool = new PdfToolCli();
@@ -58,24 +41,35 @@ public class PdfToolCli {
         }
     }
 
+    private Options buildCliOptions() {
+        return new Options()
+                .addOption(builder().longOpt("target-dir")
+                        .required(false)
+                        .argName("target directory")
+                        .desc("location where the stamped PDF will be written to; defaults to the systems temp directory")
+                        .hasArg()
+                        .build())
+                .addOption(builder().longOpt("file")
+                        .required()
+                        .argName("PdfDoc")
+                        .desc("the pdf document")
+                        .hasArg()
+                        .build());
+    }
+
     private void stampPdfFormToFile(ParseConfiguration parseConfiguration) throws IOException {
         if (exists(parseConfiguration.filename)) {
-            var result = printPreFilledPdf(parseConfiguration.filename);
+            var result = printPreFilledPdf(parseConfiguration.filename, parseConfiguration.targetDirectory);
             LOGGER.info("Result can be found here: {}", result.toAbsolutePath());
         } else {
             LOGGER.error("PDF file '{}' does not exist!", parseConfiguration.filename.toAbsolutePath());
         }
     }
 
-    public Path printPreFilledPdf(Path documentPath) throws IOException {
-        byte[] fileContent = readAllBytes(documentPath);
-        byte[] doc = new Stamper().prefill(fileContent);
-        String outputDir = System.getenv("OUTPUT_DIR");
-        if (outputDir == null) {
-            outputDir = System.getProperty("java.io.tmpdir");
-        }
+    public Path printPreFilledPdf(Path documentPath, Path targetPath) throws IOException {
+        var doc = new Stamper().prefill(readAllBytes(documentPath));
 
-        Path out = createTempFile(Path.of(outputDir), "stamped", ".pdf");
+        var out = createTempFile(targetPath, "stamped", ".pdf");
         write(out, doc, WRITE);
 
         return out.toAbsolutePath();

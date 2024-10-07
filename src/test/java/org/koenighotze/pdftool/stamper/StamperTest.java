@@ -1,7 +1,5 @@
 package org.koenighotze.pdftool.stamper;
 
-import org.apache.pdfbox.pdmodel.PDDocument;
-import org.apache.pdfbox.text.PDFTextStripper;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Disabled;
@@ -12,14 +10,12 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.PrintStream;
 import java.net.URISyntaxException;
-import java.nio.charset.StandardCharsets;
-import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 
 import static java.nio.charset.StandardCharsets.UTF_8;
+import static java.nio.file.Files.readAllBytes;
 import static java.util.Objects.requireNonNull;
-import static org.apache.pdfbox.Loader.loadPDF;
 import static org.assertj.core.api.Assertions.assertThat;
 
 /**
@@ -51,7 +47,7 @@ public class StamperTest {
     @Test
     @Disabled("Fix me because of actual logging")
     public void the_field_information_is_printed_to_stdout() throws IOException {
-        new Stamper().prefill(Files.readAllBytes(this.path));
+        new Stamper().prefill(readAllBytes(this.path));
 
         assertThat(stdOutBos.toString(UTF_8)).contains("Stamping key " + KNOWN_FIELD_NAME);
     }

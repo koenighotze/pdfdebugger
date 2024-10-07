@@ -15,7 +15,6 @@ import java.net.URISyntaxException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 
-import static java.lang.System.setErr;
 import static java.lang.System.setOut;
 import static java.nio.charset.StandardCharsets.UTF_8;
 import static java.util.Objects.requireNonNull;
@@ -26,11 +25,8 @@ import static org.assertj.core.api.Assertions.assertThat;
  * @author dschmitz
  */
 public class PdfToolCliTest {
-
     private PrintStream originalOut;
     private ByteArrayOutputStream stdOutBos;
-    private PrintStream originalErr;
-    private ByteArrayOutputStream stdErrBos;
     private Path path;
 
     @BeforeEach
@@ -41,10 +37,6 @@ public class PdfToolCliTest {
         originalOut = System.out;
         stdOutBos = new ByteArrayOutputStream();
         setOut(new PrintStream(new BufferedOutputStream(stdOutBos), true));
-
-        originalErr = System.err;
-        stdErrBos = new ByteArrayOutputStream();
-        setErr(new PrintStream(new BufferedOutputStream(stdErrBos), true));
     }
 
     @AfterEach
@@ -52,28 +44,17 @@ public class PdfToolCliTest {
         if (null != originalOut) {
             setOut(originalOut);
         }
-
-        if (null != originalErr) {
-            setErr(originalErr);
-        }
     }
 
     @Test
     public void the_form_fields_of_a_pdf_are_filled_with_the_fields_name() throws IOException {
-        Path result = new PdfToolCli().printPreFilledPdf(this.path);
+        Path result = new PdfToolCli().printPreFilledPdf(this.path, Path.of(System.getProperty("java.io.tmpdir")));
 
         PDDocument document = loadPDF(result.toFile());
         String text = new PDFTextStripper().getText(document);
 
         assertThat(text).contains("Telephone_Work");
     }
-
-//    @Test
-//    public void stamping_a_form_returns_the_result_as_a_path() throws IOException {
-//        Path result = new Stamper().printPreFilledPdf(this.path);
-//
-//        assertThat(Files.exists(result)).isTrue();
-//    }
 
     @Test
     public void calling_the_main_method_without_args_prints_the_usage() throws IOException {
@@ -96,5 +77,4 @@ public class PdfToolCliTest {
         //        System.out.println(stdOutBos.toString(UTF_8));
         //        assertThat(stdErrBos.toString(UTF_8)).contains("does not exist!");
     }
-
 }
