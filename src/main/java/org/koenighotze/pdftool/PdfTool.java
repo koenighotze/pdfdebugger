@@ -1,17 +1,15 @@
 package org.koenighotze.pdftool;
 
-import org.apache.commons.cli.DefaultParser;
-import org.apache.commons.cli.HelpFormatter;
-import org.apache.commons.cli.Options;
-import org.apache.commons.cli.ParseException;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.koenighotze.pdftool.stamper.Stamper;
 
 import java.io.IOException;
 import java.nio.file.Path;
-import java.nio.file.Paths;
 
-import static java.nio.file.Files.exists;
-import static org.apache.commons.cli.Option.builder;
+import static java.nio.file.Files.*;
+import static java.nio.file.Files.write;
+import static java.nio.file.StandardOpenOption.WRITE;
 
 /**
  * Simple tool for pre-stamping a PDF form with the keys of the fields as their
@@ -20,56 +18,19 @@ import static org.apache.commons.cli.Option.builder;
  * @author dschmitz
  */
 public class PdfTool {
-    private Options buildCliOptions() {
-        return new Options().addOption(builder().longOpt("verbose")
-                        .desc("verbose output")
-                        .build())
-                .addOption(builder().longOpt("numbers")
-                        .desc("print numbers instead of names")
-                        .build())
-                .addOption(builder().longOpt("file")
-                        .required()
-                        .argName("PdfDoc")
-                        .desc("the pdf document")
-                        .hasArg()
-                        .build());
-    }
+    private static final Logger LOGGER = LogManager.getLogger(PdfTool.class);
 
-    public static void main(String[] args) throws IOException {
-        var pdfTool = new PdfTool();
-        Options options = pdfTool.buildCliOptions();
-
-        try {
-            var parseConfiguration = ParseConfiguration.fromCliArguments(args, options);
-
-            pdfTool.stampPdfFormToFile(parseConfiguration);
-        } catch (ParseException e) {
-            pdfTool.printUsage(options);
+    public Path printPreFilledPdf(Path documentPath) throws IOException {
+        byte[] fileContent = readAllBytes(documentPath);
+        byte[] doc = new Stamper().prefill(fileContent);
+        String outputDir = System.getenv("OUTPUT_DIR");
+        if (outputDir == null) {
+            outputDir = System.getProperty("java.io.tmpdir");
         }
+
+        Path out = createTempFile(Path.of(outputDir), "stamped", ".pdf");
+        write(out, doc, WRITE);
+
+        return out.toAbsolutePath();
     }
-
-    private void stampPdfFormToFile(ParseConfiguration parseConfiguration) throws IOException {
-        if (exists(parseConfiguration.filename)) {
-            var result = new Stamper().printPreFilledPdf(parseConfiguration.numbers, parseConfiguration.verbose, parseConfiguration.filename);
-            System.out.printf("Result is here: %s%n", result.toAbsolutePath());
-        } else {
-            System.err.println("File " + parseConfiguration.filename.toAbsolutePath() + " does not exist!");
-        }
-    }
-
-    private void printUsage(Options options) {
-        new HelpFormatter().printHelp("PdfTool", options);
-    }
-
-    public record ParseConfiguration(Path filename, Boolean numbers, Boolean verbose) {
-        static ParseConfiguration fromCliArguments(String[] args, Options options) throws ParseException {
-            var parsedOptions = new DefaultParser().parse(options, args);
-            return new ParseConfiguration(
-                    Paths.get(parsedOptions.getOptionValue("file")),
-                    parsedOptions.hasOption("numbers"),
-                    parsedOptions.hasOption("verbose"));
-        }
-    }
-
-
 }

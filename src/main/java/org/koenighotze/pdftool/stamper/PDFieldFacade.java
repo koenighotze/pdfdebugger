@@ -1,19 +1,16 @@
 package org.koenighotze.pdftool.stamper;
 
-import org.apache.pdfbox.pdmodel.interactive.form.PDAcroForm;
-import org.apache.pdfbox.pdmodel.interactive.form.PDField;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+import org.apache.pdfbox.pdmodel.interactive.form.*;
 
 import java.io.IOException;
 import java.util.Optional;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
-import static java.util.logging.Level.WARNING;
-import static org.koenighotze.pdftool.stamper.PDFieldStrategyFactory.forField;
-import static org.koenighotze.pdftool.stamper.StampDebugger.dumpDebugData;
+import static org.apache.logging.log4j.LogManager.getLogger;
 
 public class PDFieldFacade {
-    private static final Logger LOGGER = Logger.getLogger( PDFieldFacade.class.getName() );
+    private static final Logger LOGGER = getLogger(PDFieldFacade.class);
 
     private final PDField field;
 
@@ -23,27 +20,26 @@ public class PDFieldFacade {
         this.field = field;
     }
 
-    private void logStamp(boolean useNumbers, String fieldType, String key, String val) {
-        System.out.printf("Stamping key %s (%s) %s%n", key, fieldType, useNumbers ? " as " + val : "");
-    }
+    public void stamp() {
+        LOGGER.info("Stamping field with key '{}' of type {}", field.getFullyQualifiedName(), field.getFieldType());
+        final Optional<String> stampValue = determineStampValue();
 
-    public void stamp(boolean useNumbers, boolean verbose, int fieldNumber) {
-        final Optional<String> stampValue = forField(field).determineStampValueForField(field);
-
-        logStamp(useNumbers, field.getFieldType(), field.getPartialName(), stampValue.orElse("n/a"));
+        if (stampValue.isEmpty()) {
+            LOGGER.warn("Field with key '{}' cannot be stamped with a value", field.getFullyQualifiedName());
+            return;
+        }
 
         try {
-            if (stampValue.isPresent()) {
-                field.setValue(stampValue.get());
-            } else {
-                LOGGER.log(WARNING, "Field {0} cannot be stamped with a value", field.getFullyQualifiedName());
-            }
+            field.setValue(stampValue.get());
         } catch (IOException e) {
-            LOGGER.log(WARNING, "Cannot stamp field {0} ({1})", new Object[] { field.getFullyQualifiedName(), e.getMessage() });
+            LOGGER.warn("Cannot stamp field with key {} because of: {}", field.getFullyQualifiedName(), e.getMessage());
         }
+    }
 
-        if (verbose) {
-            dumpDebugData(field.getAcroForm(), field.getFullyQualifiedName());
+    private Optional<String> determineStampValue() {
+        if (field instanceof PDTextField) {
+            return Optional.of(field.getFullyQualifiedName());
         }
+        return Optional.empty();
     }
 }
