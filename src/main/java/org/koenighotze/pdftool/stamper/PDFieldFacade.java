@@ -10,6 +10,7 @@ import java.util.logging.Logger;
 
 import static java.util.logging.Level.WARNING;
 import static org.koenighotze.pdftool.stamper.PDFieldStrategyFactory.forField;
+import static org.koenighotze.pdftool.stamper.StampDebugger.dumpDebugData;
 
 public class PDFieldFacade {
     private static final Logger LOGGER = Logger.getLogger( PDFieldFacade.class.getName() );
@@ -22,22 +23,18 @@ public class PDFieldFacade {
         this.field = field;
     }
 
+    private void logStamp(boolean useNumbers, String fieldType, String key, String val) {
+        System.out.printf("Stamping key %s (%s) %s%n", key, fieldType, useNumbers ? " as " + val : "");
+    }
+
     public void stamp(boolean useNumbers, boolean verbose, int fieldNumber) {
         final Optional<String> stampValue = forField(field).determineStampValueForField(field);
 
-//        logStamp(useNumbers, field, fieldIdentifier) ;
-
-//        if (verbose) {
-//        LOGGER.log( Level.FINE, "processing {0} entries in loop", list.size() );
-
-//            dumpDebugData(acroForm, field.getFullyQualifiedName());
-//        }
+        logStamp(useNumbers, field.getFieldType(), field.getPartialName(), stampValue.orElse("n/a"));
 
         try {
-            stampValue.map(field::setValue).orElseThrow(() -> new IOException("Cannot stamp field")
-
-            if (null != stampValue) {
-                field.setValue(stampValue);
+            if (stampValue.isPresent()) {
+                field.setValue(stampValue.get());
             } else {
                 LOGGER.log(WARNING, "Field {0} cannot be stamped with a value", field.getFullyQualifiedName());
             }
@@ -45,6 +42,8 @@ public class PDFieldFacade {
             LOGGER.log(WARNING, "Cannot stamp field {0} ({1})", new Object[] { field.getFullyQualifiedName(), e.getMessage() });
         }
 
-//        return fieldNumber + 1;
+        if (verbose) {
+            dumpDebugData(field.getAcroForm(), field.getFullyQualifiedName());
+        }
     }
 }
