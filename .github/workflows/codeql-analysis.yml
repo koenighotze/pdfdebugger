@@ -4,7 +4,6 @@ on:
   push:
     branches: ["**"]
   pull_request:
-    # The branches below must be a subset of the branches above
     branches: [main]
   schedule:
     - cron: "0 12 * * *"
@@ -18,11 +17,6 @@ jobs:
       contents: read
       security-events: write
 
-    strategy:
-      fail-fast: false
-      matrix:
-        language: ["java"]
-
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
@@ -30,7 +24,7 @@ jobs:
       - name: Initialize CodeQL
         uses: github/codeql-action/init@v3
         with:
-          languages: ${{ matrix.language }}
+          languages: java
 
       - name: Setup Java
         uses: actions/setup-java@v4
@@ -41,9 +35,6 @@ jobs:
 
       - name: Build
         run: ./mvnw --no-transfer-progress package
-
-      # ℹ️ Command-line programs to run using the OS shell.
-      # 📚 https://git.io/JvXDl
 
       - name: Perform CodeQL Analysis
         uses: github/codeql-action/analyze@v3
