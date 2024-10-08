@@ -42,15 +42,13 @@ Usage:
 ```
 PdfTool
     --file <PdfDoc>   the pdf document
-    --numbers         print numbers instead of names
-    --verbose         verbose output
 ```
 
 and use it like this:
 
 ```bash
 
-$ java -jar pdftool-<VERSION>.jar --file YOUR_PDF_FORM.pdf --verbose
+$ java -jar pdftool-<VERSION>.jar --file YOUR_PDF_FORM.pdf 
 ...
 Result is here: /var/folders/fj/m9dg31412tgg3v1l3ly23145t6j5nw/T/stamped8992316045665224650.pdf
 ```
@@ -62,12 +60,12 @@ The result file contains the stamped version.
 
 - [ ] Move to Java 21
 - [x] Container scan
-- [ ] Container upload
+- [x] Container upload
 - [ ] Profiling
 - [ ] Integration test
 - [ ] Upload Javadoc
 - [ ] Release
 - [x] Setup commit sign force
 - [x] More linting
-- [ ] Drop iText
+- [x] Drop iText
 - [x] Drop vavr
