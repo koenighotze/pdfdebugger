@@ -39,7 +39,7 @@
         <maven.compiler.source>17</maven.compiler.source>
         <maven.compiler.target>17</maven.compiler.target>
         <maven.compiler.showDeprecation>true</maven.compiler.showDeprecation>
-        <required.maven.version>3.2.5</required.maven.version>
+        <required.maven.version>3.6.3</required.maven.version>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
         <main.class>org.koenighotze.pdftool.PdfToolCli</main.class>
@@ -48,15 +48,14 @@
         <sonar.organization>koenighotze</sonar.organization>
         <sonar.host.url>https://sonarcloud.io</sonar.host.url>
 
-    <!-- libs -->
-    <itext.version>2.1.7</itext.version>
-    <junit.version>5.11.1</junit.version>
-    <junit.platform.version>1.10.0</junit.platform.version>
-    <assertj.version>3.26.3</assertj.version>
-    <pdfbox.version>3.0.2</pdfbox.version>
-    <commons-cli.version>1.9.0</commons-cli.version>
-    <bcprov-jdk14.version>1.78.1</bcprov-jdk14.version>
-    <bctsp-jdk14.version>1.46</bctsp-jdk14.version>
+        <!-- libs -->
+        <junit.version>5.11.2</junit.version>
+        <junit.platform.version>1.10.0</junit.platform.version>
+        <assertj.version>3.26.3</assertj.version>
+        <pdfbox.version>3.0.3</pdfbox.version>
+        <commons-cli.version>1.9.0</commons-cli.version>
+        <bcprov-jdk14.version>1.78.1</bcprov-jdk14.version>
+        <bctsp-jdk14.version>1.46</bctsp-jdk14.version>
 
         <!-- plugins -->
         <shade-plugin.version>3.6.0</shade-plugin.version>
@@ -64,6 +63,9 @@
         <maven-enforcer-plugin.version>3.5.0</maven-enforcer-plugin.version>
         <jacoco-maven-plugin.version>0.8.12</jacoco-maven-plugin.version>
         <log4j.version>2.24.1</log4j.version>
+        <maven-compiler-plugin.version>3.13.0</maven-compiler-plugin.version>
+        <maven-resources-plugin.version>3.3.1</maven-resources-plugin.version>
+        <maven-surefire-plugin.version>3.5.1</maven-surefire-plugin.version>
     </properties>
 
     <dependencyManagement>
@@ -130,123 +132,124 @@
         </dependency>
     </dependencies>
 
-  <build>
-    <plugins>
-      <plugin>
-        <groupId>org.apache.maven.plugins</groupId>
-        <artifactId>maven-enforcer-plugin</artifactId>
-        <version>${maven-enforcer-plugin.version}</version>
-        <executions>
-          <execution>
-            <id>enforce-maven</id>
-            <goals>
-              <goal>enforce</goal>
-            </goals>
-            <configuration>
-              <rules>
-                <requireMavenVersion>
-                  <version>${required.maven.version}</version>
-                </requireMavenVersion>
-              </rules>
-            </configuration>
-          </execution>
-        </executions>
-      </plugin>
-      <plugin>
-        <groupId>org.apache.maven.plugins</groupId>
-        <artifactId>maven-surefire-plugin</artifactId>
-        <version>3.5.0</version>
-      </plugin>
-      <plugin>
-        <groupId>org.apache.maven.plugins</groupId>
-        <artifactId>maven-shade-plugin</artifactId>
-        <version>${shade-plugin.version}</version>
-        <configuration>
-        </configuration>
-        <executions>
-          <execution>
-            <phase>package</phase>
-            <goals>
-              <goal>shade</goal>
-            </goals>
-            <configuration>
-              <transformers>
-                <transformer implementation="org.apache.maven.plugins.shade.resource.ManifestResourceTransformer">
-                  <mainClass>${main.class}</mainClass>
-                </transformer>
-              </transformers>
-            </configuration>
-          </execution>
-        </executions>
-      </plugin>
-      <plugin>
-        <groupId>com.google.cloud.tools</groupId>
-        <artifactId>jib-maven-plugin</artifactId>
-        <version>${jib-maven-plugin.version}</version>
-        <configuration>
-          <from>
-            <image>docker.io/library/eclipse-temurin:17-jre</image>
-          </from>
-          <to>
-            <image>docker.io/koenighotze/pdfdebugger</image>
-            <tags>
-              <tag>${docker.tag}</tag>
-            </tags>
-          </to>
-          <container>
-            <jvmFlags>
-              <jvmFlag>-Xms512m</jvmFlag>
-            </jvmFlags>
-            <labels>
-              <org.opencontainers.image.created>${maven.build.timestamp}</org.opencontainers.image.created>
-              <org.opencontainers.image.url>${project.scm.url}</org.opencontainers.image.url>
-              <org.opencontainers.image.version>${project.version}</org.opencontainers.image.version>
-              <org.opencontainers.image.vendor>${project.groupId}</org.opencontainers.image.vendor>
-              <org.opencontainers.image.title>${project.artifactId}</org.opencontainers.image.title>
-              <org.opencontainers.image.description>${project.description}</org.opencontainers.image.description>
-            </labels>
-            <volumes>
-              <volume>/app/pdf</volume>
-            </volumes>
-            <environment>
-              <OUTPUT_DIR>/app/out</OUTPUT_DIR>
-            </environment>
-          </container>
-        </configuration>
-      </plugin>
-      <plugin>
-        <groupId>org.jacoco</groupId>
-        <artifactId>jacoco-maven-plugin</artifactId>
-        <version>${jacoco-maven-plugin.version}</version>
-        <executions>
-          <execution>
-            <id>pre-test</id>
-            <phase>process-test-sources</phase>
-            <goals>
-              <goal>prepare-agent</goal>
-            </goals>
-            <configuration>
-              <destFile>${project.build.directory}/coverage-reports/jacoco-ut.exec</destFile>
-            </configuration>
-          </execution>
-          <execution>
-            <id>report-unit-test</id>
-            <phase>test</phase>
-            <goals>
-              <goal>report</goal>
-            </goals>
-            <configuration>
-              <dataFile>${project.build.directory}/coverage-reports/jacoco-ut.exec</dataFile>
-              <outputDirectory>${project.build.directory}/coverage-reports/jacoco-ut</outputDirectory>
-            </configuration>
-          </execution>
-        </executions>
-      </plugin>
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-enforcer-plugin</artifactId>
+                <version>${maven-enforcer-plugin.version}</version>
+                <executions>
+                    <execution>
+                        <id>enforce-maven</id>
+                        <goals>
+                            <goal>enforce</goal>
+                        </goals>
+                        <configuration>
+                            <rules>
+                                <requireMavenVersion>
+                                    <version>${required.maven.version}</version>
+                                </requireMavenVersion>
+                            </rules>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-surefire-plugin</artifactId>
+                <version>${maven-surefire-plugin.version}</version>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-shade-plugin</artifactId>
+                <version>${shade-plugin.version}</version>
+                <configuration>
+                </configuration>
+                <executions>
+                    <execution>
+                        <phase>package</phase>
+                        <goals>
+                            <goal>shade</goal>
+                        </goals>
+                        <configuration>
+                            <transformers>
+                                <transformer
+                                        implementation="org.apache.maven.plugins.shade.resource.ManifestResourceTransformer">
+                                    <mainClass>${main.class}</mainClass>
+                                </transformer>
+                            </transformers>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+            <plugin>
+                <groupId>com.google.cloud.tools</groupId>
+                <artifactId>jib-maven-plugin</artifactId>
+                <version>${jib-maven-plugin.version}</version>
+                <configuration>
+                    <from>
+                        <image>docker.io/library/eclipse-temurin:17-jre</image>
+                    </from>
+                    <to>
+                        <image>docker.io/koenighotze/pdfdebugger</image>
+                        <tags>
+                            <tag>${docker.tag}</tag>
+                        </tags>
+                    </to>
+                    <container>
+                        <jvmFlags>
+                            <jvmFlag>-Xms512m</jvmFlag>
+                        </jvmFlags>
+                        <labels>
+                            <org.opencontainers.image.created>${maven.build.timestamp}</org.opencontainers.image.created>
+                            <org.opencontainers.image.url>${project.scm.url}</org.opencontainers.image.url>
+                            <org.opencontainers.image.version>${project.version}</org.opencontainers.image.version>
+                            <org.opencontainers.image.vendor>${project.groupId}</org.opencontainers.image.vendor>
+                            <org.opencontainers.image.title>${project.artifactId}</org.opencontainers.image.title>
+                            <org.opencontainers.image.description>${project.description}</org.opencontainers.image.description>
+                        </labels>
+                        <volumes>
+                            <volume>/app/pdf</volume>
+                        </volumes>
+                        <environment>
+                            <OUTPUT_DIR>/app/out</OUTPUT_DIR>
+                        </environment>
+                    </container>
+                </configuration>
+            </plugin>
+            <plugin>
+                <groupId>org.jacoco</groupId>
+                <artifactId>jacoco-maven-plugin</artifactId>
+                <version>${jacoco-maven-plugin.version}</version>
+                <executions>
+                    <execution>
+                        <id>pre-test</id>
+                        <phase>process-test-sources</phase>
+                        <goals>
+                            <goal>prepare-agent</goal>
+                        </goals>
+                        <configuration>
+                            <destFile>${project.build.directory}/coverage-reports/jacoco-ut.exec</destFile>
+                        </configuration>
+                    </execution>
+                    <execution>
+                        <id>report-unit-test</id>
+                        <phase>test</phase>
+                        <goals>
+                            <goal>report</goal>
+                        </goals>
+                        <configuration>
+                            <dataFile>${project.build.directory}/coverage-reports/jacoco-ut.exec</dataFile>
+                            <outputDirectory>${project.build.directory}/coverage-reports/jacoco-ut</outputDirectory>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
 
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-compiler-plugin</artifactId>
-                <version>3.11.0</version>
+                <version>${maven-compiler-plugin.version}</version>
                 <configuration>
                     <source>${maven.compiler.source}</source>
                     <target>${maven.compiler.target}</target>
@@ -256,7 +259,7 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-resources-plugin</artifactId>
-                <version>3.3.1</version>
+                <version>${maven-resources-plugin.version}</version>
             </plugin>
         </plugins>
     </build>
