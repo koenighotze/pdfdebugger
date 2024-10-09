@@ -3,10 +3,11 @@ package org.koenighotze.pdftool.stamper;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.apache.pdfbox.pdmodel.PDDocument;
-import org.apache.pdfbox.pdmodel.interactive.form.*;
+import org.apache.pdfbox.pdmodel.interactive.form.PDAcroForm;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+
 import static org.apache.pdfbox.Loader.loadPDF;
 
 public class Stamper {
@@ -17,9 +18,6 @@ public class Stamper {
             if (!isStampable(document)) {
                 throw new IOException("Document is not stampable! It does not contain a form!");
             }
-
-            LOGGER.debug("Document has {} pages", document.getNumberOfPages());
-
             var numberOfStampedFields = stampFields(document.getDocumentCatalog().getAcroForm());
             LOGGER.info("Stamped {} fields", numberOfStampedFields);
 

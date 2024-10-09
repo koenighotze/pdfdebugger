@@ -15,6 +15,7 @@ import java.nio.file.Paths;
 import static java.nio.file.Files.*;
 import static java.nio.file.StandardOpenOption.WRITE;
 import static org.apache.commons.cli.Option.builder;
+import static org.koenighotze.pdftool.PdfToolCli.ParseConfiguration.fromCliArguments;
 
 public class PdfToolCli {
     public record ParseConfiguration(Path filename, Path targetDirectory) {
@@ -26,14 +27,14 @@ public class PdfToolCli {
         }
     }
 
-    private static final Logger LOGGER = LogManager.getLogger(PdfTool.class);
+    private static final Logger LOGGER = LogManager.getLogger(PdfToolCli.class);
 
     public static void main(String[] args) throws IOException {
         var pdfTool = new PdfToolCli();
         Options options = pdfTool.buildCliOptions();
 
         try {
-            var parseConfiguration = ParseConfiguration.fromCliArguments(args, options);
+            var parseConfiguration = fromCliArguments(args, options);
 
             pdfTool.stampPdfFormToFile(parseConfiguration);
         } catch (ParseException e) {
@@ -59,11 +60,11 @@ public class PdfToolCli {
 
     private void stampPdfFormToFile(ParseConfiguration parseConfiguration) throws IOException {
         if (exists(parseConfiguration.filename)) {
-            var result = printPreFilledPdf(parseConfiguration.filename, parseConfiguration.targetDirectory);
-            LOGGER.info("Result can be found here: {}", result.toAbsolutePath());
-        } else {
             LOGGER.error("PDF file '{}' does not exist!", parseConfiguration.filename.toAbsolutePath());
+            return;
         }
+        var result = printPreFilledPdf(parseConfiguration.filename, parseConfiguration.targetDirectory);
+        LOGGER.info("Result can be found here: {}", result.toAbsolutePath());
     }
 
     public Path printPreFilledPdf(Path documentPath, Path targetPath) throws IOException {
@@ -76,6 +77,6 @@ public class PdfToolCli {
     }
 
     private void printUsage(Options options) {
-        new HelpFormatter().printHelp("PdfTool", options);
+        new HelpFormatter().printHelp("PdfToolCli", options);
     }
 }

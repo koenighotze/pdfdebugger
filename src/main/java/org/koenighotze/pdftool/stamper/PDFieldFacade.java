@@ -1,15 +1,15 @@
 package org.koenighotze.pdftool.stamper;
 
-import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.apache.pdfbox.pdmodel.interactive.form.*;
+import org.apache.pdfbox.pdmodel.interactive.form.PDField;
+import org.apache.pdfbox.pdmodel.interactive.form.PDTextField;
 
 import java.io.IOException;
 import java.util.Optional;
 
 import static org.apache.logging.log4j.LogManager.getLogger;
 
-public class PDFieldFacade {
+class PDFieldFacade {
     private static final Logger LOGGER = getLogger(PDFieldFacade.class);
 
     private final PDField field;
@@ -36,7 +36,7 @@ public class PDFieldFacade {
         }
     }
 
-    private Optional<String> determineStampValue() {
+    Optional<String> determineStampValue() {
         if (field instanceof PDTextField) {
             return Optional.of(field.getFullyQualifiedName());
         }
