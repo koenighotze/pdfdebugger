@@ -21,10 +21,9 @@ if [[ "$GITHUB_REF" = refs/tags/* ]]; then
     GIT_TAG=${GITHUB_REF/refs\/tags\/}
     echo "Building for tag $GIT_TAG"
 else
-    GIT_TAG="${GITHUB_SHA}"
-
-#    echo "Skip push for non-tag ref $GITHUB_REF"
-#    exit 0
+#    GIT_TAG="${GITHUB_SHA}"
+    echo "Skip push for non-tag ref $GITHUB_REF"
+    exit 0
 fi
 
 echo "Pushing image ${IMAGE_NAME} contained in ${IMAGE_TAR} to ${CONTAINER_REGISTRY}/${GITHUB_REPOSITORY}:${GIT_TAG}"
