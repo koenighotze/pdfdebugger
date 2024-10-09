@@ -13,7 +13,7 @@ if [[ "${TRACE-0}" == "1" ]]; then set -o xtrace; fi
 : "${GITHUB_REF?'Expected env var GITHUB_REF not set'}"
 : "${IMAGE_NAME?'Expected env var IMAGE_NAME not set'}"
 : "${IMAGE_TAR?'Expected env var IMAGE_TAR not set'}"
-: "${GITHUB_SHA?'Expected env var GITHUB_SHA not set'
+: "${GITHUB_SHA?'Expected env var GITHUB_SHA not set'}"
 : "${DOCKER_USERNAME?'Expected env var DOCKER_USERNAME not set'}"
 : "${DOCKER_PASSWORD?'Expected env var DOCKER_PASSWORD not set'}"
 
@@ -22,6 +22,9 @@ if [[ "$GITHUB_REF" = refs/tags/* ]]; then
     echo "Building for tag $GIT_TAG"
 else
     GIT_TAG="${GITHUB_SHA}"
+
+#    echo "Skip push for non-tag ref $GITHUB_REF"
+#    exit 0
 fi
 
 echo "Pushing image ${IMAGE_NAME} contained in ${IMAGE_TAR} to ${CONTAINER_REGISTRY}/${GITHUB_REPOSITORY}:${GIT_TAG}"
