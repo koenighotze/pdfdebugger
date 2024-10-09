@@ -13,13 +13,13 @@ if [[ "${TRACE-0}" == "1" ]]; then set -o xtrace; fi
 : "${GITHUB_REF?'Expected env var GITHUB_REF not set'}"
 : "${IMAGE_NAME?'Expected env var IMAGE_NAME not set'}"
 : "${IMAGE_TAR?'Expected env var IMAGE_TAR not set'}"
+: "${GITHUB_SHA?'Expected env var GITHUB_SHA not set'}"
 
 if [[ "$GITHUB_REF" = refs/tags/* ]]; then
     GIT_TAG=${GITHUB_REF/refs\/tags\/}
     echo "Building for tag $GIT_TAG"
 else
-    echo "Will only push tagged images..."
-    exit 1
+    GIT_TAG="${GITHUB_SHA}"
 fi
 
 echo "Pushing image ${IMAGE_NAME} contained in ${IMAGE_TAR} to ${CONTAINER_REGISTRY}/${GITHUB_REPOSITORY}:${GIT_TAG}"
