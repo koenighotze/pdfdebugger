@@ -76,14 +76,6 @@ jobs:
           DOCKER_USERNAME: ${{ secrets.DOCKER_USERNAME }}
           DOCKER_PASSWORD: ${{ secrets.DOCKER_PASSWORD }}
 
-      - name: Cache Trivy database
-        uses: actions/cache@v3
-        with:
-          path: ~/.cache/trivy
-          key: ${{ runner.os }}-trivy-db
-          restore-keys: |
-            ${{ runner.os }}-trivy-db
-
       - name: Run vulnerability scanner
         uses: aquasecurity/trivy-action@0.25.0
         with:
@@ -95,6 +87,7 @@ jobs:
           severity: "CRITICAL,HIGH"
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          TRIVY_DISABLE_VEX_NOTICE: true
 
       - name: Push image to registry
         if: github.event_name != 'pull_request'
