@@ -59,7 +59,7 @@ public class PdfToolCli {
     }
 
     private void stampPdfFormToFile(ParseConfiguration parseConfiguration) throws IOException {
-        if (exists(parseConfiguration.filename)) {
+        if (!exists(parseConfiguration.filename)) {
             LOGGER.error("PDF file '{}' does not exist!", parseConfiguration.filename.toAbsolutePath());
             return;
         }
