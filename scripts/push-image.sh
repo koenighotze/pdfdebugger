@@ -18,9 +18,8 @@ if [[ "$GITHUB_REF" = refs/tags/* ]]; then
     GIT_TAG=${GITHUB_REF/refs\/tags\/}
     echo "Building for tag $GIT_TAG"
 else
-    echo "Will only push tagged images...temp allow for now"
-    GIT_TAG=fortuna123
-#    exit 1
+    echo "Will only push tagged images..."
+    exit 1
 fi
 
 echo "Pushing image ${IMAGE_NAME} contained in ${IMAGE_TAR} to ${CONTAINER_REGISTRY}/${GITHUB_REPOSITORY}:${GIT_TAG}"
