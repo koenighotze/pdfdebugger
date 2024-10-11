@@ -18,7 +18,7 @@ import static org.apache.commons.cli.Option.builder;
 import static org.koenighotze.pdftool.PdfToolCli.ParseConfiguration.fromCliArguments;
 
 public class PdfToolCli {
-    public record ParseConfiguration(Path filename, Path targetDirectory) {
+    record ParseConfiguration(Path filename, Path targetDirectory) {
         static ParseConfiguration fromCliArguments(String[] args, Options options) throws ParseException {
             var parsedOptions = new DefaultParser().parse(options, args);
             return new ParseConfiguration(
@@ -45,7 +45,6 @@ public class PdfToolCli {
     private Options buildCliOptions() {
         return new Options()
                 .addOption(builder().longOpt("target-dir")
-                        .required(false)
                         .argName("target directory")
                         .desc("location where the stamped PDF will be written to; defaults to the systems temp directory")
                         .hasArg()

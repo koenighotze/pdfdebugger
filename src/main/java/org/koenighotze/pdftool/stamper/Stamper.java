@@ -1,7 +1,5 @@
 package org.koenighotze.pdftool.stamper;
 
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 import org.apache.pdfbox.pdmodel.PDDocument;
 import org.apache.pdfbox.pdmodel.interactive.form.PDAcroForm;
 
@@ -11,34 +9,30 @@ import java.io.IOException;
 import static org.apache.pdfbox.Loader.loadPDF;
 
 public class Stamper {
-    private static final Logger LOGGER = LogManager.getLogger(Stamper.class);
-
     public byte[] prefill(byte[] pdfDocument) throws IOException {
         try (var document = loadPDF(pdfDocument)) {
-            if (!isStampable(document)) {
+            var form = document.getDocumentCatalog().getAcroForm();
+            if (form == null) {
                 throw new IOException("Document is not stampable! It does not contain a form!");
             }
-            var numberOfStampedFields = stampFields(document.getDocumentCatalog().getAcroForm());
-            LOGGER.info("Stamped {} fields", numberOfStampedFields);
+            stampFields(form);
 
             document.getDocumentCatalog().getAcroForm().flatten();
 
-            var baos = new ByteArrayOutputStream();
+            return saveDocument(document);
+        }
+    }
+
+    private byte[] saveDocument(PDDocument document) throws IOException {
+        try (var baos = new ByteArrayOutputStream()) {
             document.save(baos);
             return baos.toByteArray();
         }
     }
 
-    private boolean isStampable(PDDocument document) {
-        return document.getDocumentCatalog().getAcroForm() != null;
-    }
-
-    private int stampFields(PDAcroForm form) {
-        return form.getFields().stream().map(PDFieldFacade::new).reduce(0, (pos, field) -> stampField(field, pos), Integer::sum);
-    }
-
-    private int stampField(PDFieldFacade field, int fieldNumber) {
-        field.stamp();
-        return fieldNumber + 1;
+    private void stampFields(PDAcroForm form) {
+        form.getFields().stream()
+                .map(PDFieldFacade::new)
+                .forEach(PDFieldFacade::stamp);
     }
 }

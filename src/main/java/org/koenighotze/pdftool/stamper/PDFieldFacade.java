@@ -7,6 +7,7 @@ import org.apache.pdfbox.pdmodel.interactive.form.PDTextField;
 import java.io.IOException;
 import java.util.Optional;
 
+import static java.util.Objects.requireNonNull;
 import static org.apache.logging.log4j.LogManager.getLogger;
 
 class PDFieldFacade {
@@ -15,24 +16,25 @@ class PDFieldFacade {
     private final PDField field;
 
     public PDFieldFacade(PDField field) {
-        assert null != field;
-
+        requireNonNull(field);
         this.field = field;
     }
 
     public void stamp() {
         LOGGER.info("Stamping field with key '{}' of type {}", field.getFullyQualifiedName(), field.getFieldType());
-        final Optional<String> stampValue = determineStampValue();
 
-        if (stampValue.isEmpty()) {
-            LOGGER.warn("Field with key '{}' cannot be stamped with a value", field.getFullyQualifiedName());
-            return;
-        }
+        determineStampValue()
+                .ifPresentOrElse(
+                        this::setFieldValue,
+                        () -> LOGGER.warn("Field with key '{}' cannot be stamped with a value", field.getFullyQualifiedName())
+                );
+    }
 
+    private void setFieldValue(String value) {
         try {
-            field.setValue(stampValue.get());
+            field.setValue(value);
         } catch (IOException e) {
-            LOGGER.warn("Cannot stamp field with key {} because of: {}", field.getFullyQualifiedName(), e.getMessage());
+            LOGGER.warn("Cannot stamp field with key '{}' because of: {}", field.getFullyQualifiedName(), e.getMessage());
         }
     }
 
