@@ -1,15 +1,17 @@
 package org.koenighotze.pdftool.stamper;
 
-import org.apache.pdfbox.pdmodel.PDDocument;
 import org.apache.pdfbox.pdmodel.interactive.form.PDAcroForm;
 
-import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.io.OutputStream;
 
+import static java.util.Objects.requireNonNull;
 import static org.apache.pdfbox.Loader.loadPDF;
 
 public class Stamper {
-    public byte[] prefill(byte[] pdfDocument) throws IOException {
+    public void prefill(byte[] pdfDocument, OutputStream outputStream) throws IOException {
+        requireNonNull(pdfDocument);
+        requireNonNull(outputStream);
         try (var document = loadPDF(pdfDocument)) {
             var form = document.getDocumentCatalog().getAcroForm();
             if (form == null) {
@@ -19,14 +21,7 @@ public class Stamper {
 
             document.getDocumentCatalog().getAcroForm().flatten();
 
-            return saveDocument(document);
-        }
-    }
-
-    private byte[] saveDocument(PDDocument document) throws IOException {
-        try (var baos = new ByteArrayOutputStream()) {
-            document.save(baos);
-            return baos.toByteArray();
+            document.save(outputStream);
         }
     }
 

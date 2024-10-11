@@ -10,4 +10,4 @@ set -o pipefail
 if [[ "${TRACE-0}" == "1" ]]; then set -o xtrace; fi
 
 ./mvnw package
-java -jar target/pdftool-2.0-SNAPSHOT.jar --file src/test/resources/interactiveform_enabled.pdf
+java -jar target/pdftool-3.5-SNAPSHOT.jar --file src/test/resources/interactiveform_enabled.pdf

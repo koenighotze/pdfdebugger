@@ -9,11 +9,11 @@ import org.apache.logging.log4j.Logger;
 import org.koenighotze.pdftool.stamper.Stamper;
 
 import java.io.IOException;
+import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 
 import static java.nio.file.Files.*;
-import static java.nio.file.StandardOpenOption.WRITE;
 import static org.apache.commons.cli.Option.builder;
 import static org.koenighotze.pdftool.PdfToolCli.ParseConfiguration.fromCliArguments;
 
@@ -67,10 +67,11 @@ public class PdfToolCli {
     }
 
     public Path printPreFilledPdf(Path documentPath, Path targetPath) throws IOException {
-        var doc = new Stamper().prefill(readAllBytes(documentPath));
-
         var out = createTempFile(targetPath, "stamped", ".pdf");
-        write(out, doc, WRITE);
+
+        try (var os = Files.newOutputStream(out)) {
+            new Stamper().prefill(readAllBytes(documentPath), os);
+        }
 
         return out.toAbsolutePath();
     }
