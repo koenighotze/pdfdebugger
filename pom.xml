@@ -60,7 +60,7 @@
 
         <!-- plugins -->
         <shade-plugin.version>3.6.0</shade-plugin.version>
-        <jib-maven-plugin.version>3.4.4</jib-maven-plugin.version>
+        <jib-maven-plugin.version>3.4.5</jib-maven-plugin.version>
         <maven-enforcer-plugin.version>3.5.0</maven-enforcer-plugin.version>
         <jacoco-maven-plugin.version>0.8.12</jacoco-maven-plugin.version>
         <log4j.version>2.24.3</log4j.version>
