@@ -51,7 +51,7 @@
         <!-- libs -->
         <junit.version>5.13.4</junit.version>
         <junit.platform.version>1.10.0</junit.platform.version>
-        <assertj.version>3.27.3</assertj.version>
+        <assertj.version>3.27.4</assertj.version>
         <pdfbox.version>3.0.3</pdfbox.version>
         <commons-cli.version>1.9.0</commons-cli.version>
         <bcprov-jdk14.version>1.80</bcprov-jdk14.version>
