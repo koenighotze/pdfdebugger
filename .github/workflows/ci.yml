@@ -13,7 +13,7 @@ env:
 
 jobs:
   security-scan:
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-24.04
 
     steps:
       - name: Checkout
@@ -39,7 +39,7 @@ jobs:
           sarif_file: "trivy-results.sarif"
 
   QA:
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-24.04
 
     steps:
       - name: Checkout
@@ -63,7 +63,7 @@ jobs:
           coverage-reports: target/coverage-reports/jacoco-ut/jacoco.xml
 
   image-build:
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-24.04
 
     steps:
       - uses: actions/checkout@v5
