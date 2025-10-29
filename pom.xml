@@ -51,22 +51,22 @@
         <!-- libs -->
         <junit.version>5.13.4</junit.version>
         <junit.platform.version>1.10.0</junit.platform.version>
-        <assertj.version>3.27.4</assertj.version>
+        <assertj.version>3.27.6</assertj.version>
         <pdfbox.version>3.0.3</pdfbox.version>
         <commons-cli.version>1.10.0</commons-cli.version>
-        <bcprov-jdk14.version>1.81</bcprov-jdk14.version>
+        <bcprov-jdk14.version>1.82</bcprov-jdk14.version>
         <bctsp-jdk14.version>1.46</bctsp-jdk14.version>
-        <mockito.version>5.19.0</mockito.version>
+        <mockito.version>5.20.0</mockito.version>
 
         <!-- plugins -->
-        <shade-plugin.version>3.6.0</shade-plugin.version>
+        <shade-plugin.version>3.6.1</shade-plugin.version>
         <jib-maven-plugin.version>3.4.6</jib-maven-plugin.version>
         <maven-enforcer-plugin.version>3.6.1</maven-enforcer-plugin.version>
         <jacoco-maven-plugin.version>0.8.13</jacoco-maven-plugin.version>
-        <log4j.version>2.25.1</log4j.version>
+        <log4j.version>2.25.2</log4j.version>
         <maven-compiler-plugin.version>3.14.1</maven-compiler-plugin.version>
         <maven-resources-plugin.version>3.3.1</maven-resources-plugin.version>
-        <maven-surefire-plugin.version>3.5.3</maven-surefire-plugin.version>
+        <maven-surefire-plugin.version>3.5.4</maven-surefire-plugin.version>
     </properties>
 
     <dependencyManagement>
