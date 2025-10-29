@@ -56,7 +56,7 @@
         <commons-cli.version>1.10.0</commons-cli.version>
         <bcprov-jdk14.version>1.82</bcprov-jdk14.version>
         <bctsp-jdk14.version>1.46</bctsp-jdk14.version>
-        <mockito.version>5.19.0</mockito.version>
+        <mockito.version>5.20.0</mockito.version>
 
         <!-- plugins -->
         <shade-plugin.version>3.6.1</shade-plugin.version>
