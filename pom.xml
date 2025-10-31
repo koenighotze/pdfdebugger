@@ -49,10 +49,10 @@
         <sonar.host.url>https://sonarcloud.io</sonar.host.url>
 
         <!-- libs -->
-        <junit.version>5.13.4</junit.version>
-        <junit.platform.version>1.10.0</junit.platform.version>
+        <junit.version>5.14.0</junit.version>
+        <junit.platform.version>1.14.0</junit.platform.version>
         <assertj.version>3.27.6</assertj.version>
-        <pdfbox.version>3.0.3</pdfbox.version>
+        <pdfbox.version>3.0.6</pdfbox.version>
         <commons-cli.version>1.10.0</commons-cli.version>
         <bcprov-jdk14.version>1.82</bcprov-jdk14.version>
         <bctsp-jdk14.version>1.46</bctsp-jdk14.version>
@@ -61,8 +61,8 @@
         <!-- plugins -->
         <shade-plugin.version>3.6.1</shade-plugin.version>
         <jib-maven-plugin.version>3.4.6</jib-maven-plugin.version>
-        <maven-enforcer-plugin.version>3.6.1</maven-enforcer-plugin.version>
-        <jacoco-maven-plugin.version>0.8.13</jacoco-maven-plugin.version>
+        <maven-enforcer-plugin.version>3.6.2</maven-enforcer-plugin.version>
+        <jacoco-maven-plugin.version>0.8.14</jacoco-maven-plugin.version>
         <log4j.version>2.25.2</log4j.version>
         <maven-compiler-plugin.version>3.14.1</maven-compiler-plugin.version>
         <maven-resources-plugin.version>3.3.1</maven-resources-plugin.version>
@@ -171,6 +171,9 @@
                 <artifactId>maven-shade-plugin</artifactId>
                 <version>${shade-plugin.version}</version>
                 <configuration>
+                    <!-- Reduce overlapping resource warnings -->
+                    <createDependencyReducedPom>true</createDependencyReducedPom>
+                    <minimizeJar>false</minimizeJar>
                 </configuration>
                 <executions>
                     <execution>
@@ -180,11 +183,35 @@
                         </goals>
                         <configuration>
                             <transformers>
+                                <!-- Set main class in manifest -->
                                 <transformer
                                         implementation="org.apache.maven.plugins.shade.resource.ManifestResourceTransformer">
                                     <mainClass>${main.class}</mainClass>
                                 </transformer>
+                                <!-- Merge service files -->
+                                <transformer
+                                        implementation="org.apache.maven.plugins.shade.resource.ServicesResourceTransformer"/>
+                                <!-- Merge license/notice files -->
+                                <transformer
+                                        implementation="org.apache.maven.plugins.shade.resource.ApacheLicenseResourceTransformer"/>
+                                <transformer
+                                        implementation="org.apache.maven.plugins.shade.resource.ApacheNoticeResourceTransformer">
+                                    <addHeader>false</addHeader>
+                                </transformer>
                             </transformers>
+                            <!-- Filter to reduce warnings about overlapping files -->
+                            <filters>
+                                <filter>
+                                    <artifact>*:*</artifact>
+                                    <excludes>
+                                        <exclude>META-INF/*.SF</exclude>
+                                        <exclude>META-INF/*.DSA</exclude>
+                                        <exclude>META-INF/*.RSA</exclude>
+                                        <exclude>META-INF/MANIFEST.MF</exclude>
+                                        <exclude>module-info.class</exclude>
+                                    </excludes>
+                                </filter>
+                            </filters>
                         </configuration>
                     </execution>
                 </executions>
@@ -258,8 +285,8 @@
                 <artifactId>maven-compiler-plugin</artifactId>
                 <version>${maven-compiler-plugin.version}</version>
                 <configuration>
-                    <source>${maven.compiler.source}</source>
-                    <target>${maven.compiler.target}</target>
+                    <release>${maven.compiler.target}</release>
+                    <showDeprecation>true</showDeprecation>
                 </configuration>
             </plugin>
 

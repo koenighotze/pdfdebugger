@@ -1,0 +1,14 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(tree:*)",
+      "Bash(./mvnw clean test:*)",
+      "Bash(gh pr list:*)",
+      "Bash(gh pr merge:*)",
+      "Bash(./mvnw test:*)",
+      "Bash(./mvnw:*)"
+    ],
+    "deny": [],
+    "ask": []
+  }
+}
