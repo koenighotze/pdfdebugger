@@ -6,7 +6,9 @@
       "Bash(gh pr list:*)",
       "Bash(gh pr merge:*)",
       "Bash(./mvnw test:*)",
-      "Bash(./mvnw:*)"
+      "Bash(./mvnw:*)",
+      "Bash(java:*)",
+      "Bash(git checkout:*)"
     ],
     "deny": [],
     "ask": []
